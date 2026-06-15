@@ -103,7 +103,7 @@ export function useSession(lessonId: number | 'all') {
       grade,
     });
 
-    // Persist to API — use the card's actual SM2 state from the server
+    // Persist to API — fire-and-forget so the UI advances instantly
     const existing: ReviewRecord = {
       cardId: card.id!,
       interval: card.interval ?? 1,
@@ -114,34 +114,31 @@ export function useSession(lessonId: number | 'all') {
 
     const updated = updateReview(existing, grade);
 
-    try {
-      await submitGrade({
-        cardId: card.id!,
-        grade,
-        interval: updated.interval,
-        easeFactor: updated.easeFactor,
-        repetitions: updated.repetitions,
-        dueDate: updated.dueDate,
-      });
-    } catch (err) {
-      // Revert the optimistic result — the grade was never persisted
-      resultsRef.current.pop();
+    // Don't await — submit in the background, revert on failure
+    submitGrade({
+      cardId: card.id!,
+      grade,
+      interval: updated.interval,
+      easeFactor: updated.easeFactor,
+      repetitions: updated.repetitions,
+      dueDate: updated.dueDate,
+    }).catch((err) => {
+      resultsRef.current = resultsRef.current.filter(
+        (r) => !(r.cardId === card.id! && r.grade === grade)
+      );
       setError(err instanceof Error ? err.message : 'Failed to save grade');
       rerender();
-      return; // don't advance — let the user retry
-    }
+    });
 
-    // ── Re-queue logic ──
-    // If missed AND this card hasn't been re-queued yet this session → push to end
+    // Re-queue if missed and not already re-queued this session
     if (grade < 2 && !requeuedRef.current.has(card.id!)) {
       requeuedRef.current.add(card.id!);
-      queueRef.current = [...queue, { ...card }]; // append a fresh copy
+      queueRef.current = [...queue, { ...card }];
     }
 
-    // Advance
+    // Advance immediately — no waiting for API
     const nextIndex = index + 1;
     if (nextIndex >= queueRef.current.length) {
-      // All cards exhausted (including any re-queued ones)
       indexRef.current = nextIndex;
       setFinished(true);
       buildSummary();
