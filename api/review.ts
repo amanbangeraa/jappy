@@ -31,8 +31,16 @@ interface GradeRequest {
 export default async function handler(req: Request): Promise<Response> {
 // Migrations removed from request path for performance
 
-  const url = new URL(req.url);
-  const lessonId = url.searchParams.get('lessonId');
+  let url: URL;
+  let lessonId: string | null;
+
+  try {
+    url = new URL(req.url, 'http://localhost');
+    lessonId = url.searchParams.get('lessonId');
+  } catch (err) {
+    console.error('Initialization error:', err);
+    return Response.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+  }
 
   // ── GET /api/review?lessonId=X — get due cards ──
   if (req.method === 'GET') {

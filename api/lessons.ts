@@ -16,11 +16,19 @@ interface LessonStats {
 }
 
 export default async function handler(req: Request): Promise<Response> {
-  await runMigrations();
+  let url: URL;
+  let id: string | null;
+  let level: string | null;
 
-  const url = new URL(req.url);
-  const id = url.searchParams.get('id');
-  const level = url.searchParams.get('level');
+  try {
+    await runMigrations();
+    url = new URL(req.url, 'http://localhost');
+    id = url.searchParams.get('id');
+    level = url.searchParams.get('level');
+  } catch (err) {
+    console.error('Initialization error:', err);
+    return Response.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+  }
 
   // ── GET /api/lessons — list all lessons with stats ──
   if (req.method === 'GET') {
