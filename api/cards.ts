@@ -21,7 +21,9 @@ interface ReviewRow {
 
 export default async function handler(req: any, res?: any): Promise<any> {
   const sendResponse = (data: any, status = 200) => {
-    if (res) return res.status(status).json(data);
+    if (res && typeof res.status === 'function') {
+      return res.status(status).json(data);
+    }
     return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
   };
 
