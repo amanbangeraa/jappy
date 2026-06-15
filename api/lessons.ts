@@ -13,7 +13,7 @@ interface LessonStats {
 }
 
 export default async function handler(req: Request): Promise<Response> {
-  await runMigrations();
+// Migrations removed from request path for performance
 
   const url = new URL(req.url);
   const id = url.searchParams.get('id');
@@ -23,7 +23,7 @@ export default async function handler(req: Request): Promise<Response> {
     try {
       if (id) {
         const rows = await sql`SELECT * FROM lessons WHERE id = ${Number(id)}`;
-        const lesson = rows as LessonRow[];
+        const lesson = rows as unknown as LessonRow[];
         if (lesson.length === 0) {
           return Response.json({ error: 'Lesson not found' }, { status: 404 });
         }
@@ -35,7 +35,7 @@ export default async function handler(req: Request): Promise<Response> {
       }
 
       const rows = await sql`SELECT * FROM lessons ORDER BY imported_at DESC`;
-      const lessons = rows as LessonRow[];
+      const lessons = rows as unknown as LessonRow[];
 
       const now = new Date();
       now.setHours(23, 59, 59, 999);
@@ -45,19 +45,19 @@ export default async function handler(req: Request): Promise<Response> {
       const enriched = await Promise.all(
         lessons.map(async (lesson) => {
           const cardRows = await sql`SELECT id FROM cards WHERE lesson_id = ${lesson.id}`;
-          const cards = cardRows as { id: number }[];
+          const cards = cardRows as unknown as { id: number }[];
           const totalCards = cards.length;
           const cardIds = cards.map((c) => c.id);
 
           let dueCards = 0;
           if (cardIds.length > 0) {
             const reviewRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds})`;
-            const reviewed = reviewRows as { card_id: number }[];
+            const reviewed = reviewRows as unknown as { card_id: number }[];
             const reviewedIds = new Set(reviewed.map((r) => r.card_id));
             const unreviewed = cardIds.filter((cid) => !reviewedIds.has(cid));
 
             const dueRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds}) AND due_date <= ${endOfToday}`;
-            const due = dueRows as { card_id: number }[];
+            const due = dueRows as unknown as { card_id: number }[];
             const dueRecordIds = new Set(due.map((r) => r.card_id));
             dueCards = unreviewed.length + dueRecordIds.size;
           }
@@ -66,7 +66,7 @@ export default async function handler(req: Request): Promise<Response> {
           let lastStudied: number | null = null;
           if (cardIds.length > 0) {
             const logRows = await sql`SELECT reviewed_at FROM session_logs WHERE card_id = ANY(${cardIds}) ORDER BY reviewed_at DESC LIMIT 1`;
-            const logs = logRows as { reviewed_at: number }[];
+            const logs = logRows as unknown as { reviewed_at: number }[];
             lastStudied = logs.length > 0 ? logs[0].reviewed_at : null;
           }
 
@@ -97,39 +97,37 @@ export default async function handler(req: Request): Promise<Response> {
 
       // Check for duplicate
       const existingRows = await sql`SELECT id FROM lessons WHERE name = ${name}`;
-      const existing = existingRows as { id: number }[];
+      const existing = existingRows as unknown as { id: number }[];
       if (existing.length > 0) {
         return Response.json({ error: `"${name}" already exists` }, { status: 409 });
       }
 
-      // Transaction: insert lesson + all cards atomically
-      await sql`BEGIN`;
-      try {
-        const result = await sql`INSERT INTO lessons (name, imported_at) VALUES (${name}, ${Date.now()}) RETURNING id, name, imported_at`;
-        const lesson = result as LessonRow[];
-        const lessonId = lesson[0].id;
+      // Insert lesson (no transaction — Neon HTTP endpoint uses connection-per-request)
+      const result = await sql`INSERT INTO lessons (name, imported_at) VALUES (${name}, ${Date.now()}) RETURNING id, name, imported_at`;
+      const lesson = result as unknown as LessonRow[];
+      const lessonId = lesson[0].id;
 
-        // Bulk insert cards
+      // Bulk insert cards (best-effort: if any fail, delete the lesson as cleanup)
+      try {
         for (const row of rows) {
           await sql`INSERT INTO cards (lesson_id, japanese, english, reading) VALUES (${lessonId}, ${row.japanese}, ${row.english}, ${row.reading ?? null})`;
         }
-
-        await sql`COMMIT`;
-
-        return Response.json({
-          id: lesson[0].id,
-          name: lesson[0].name,
-          importedAt: lesson[0].imported_at,
-          stats: {
-            totalCards: rows.length,
-            dueCards: rows.length,
-            lastStudied: null,
-          },
-        }, { status: 201 });
-      } catch (_innerErr) {
-        await sql`ROLLBACK`;
-        throw _innerErr; // re-throw to outer catch for error response
+      } catch (cardErr) {
+        // Cleanup: delete the lesson if card inserts fail
+        await sql`DELETE FROM lessons WHERE id = ${lessonId}`;
+        throw cardErr;
       }
+
+      return Response.json({
+        id: lesson[0].id,
+        name: lesson[0].name,
+        importedAt: lesson[0].imported_at,
+        stats: {
+          totalCards: rows.length,
+          dueCards: rows.length,
+          lastStudied: null,
+        },
+      }, { status: 201 });
     } catch (err) {
       console.error('POST /api/lessons error:', err);
       return Response.json({ error: 'Failed to import lesson' }, { status: 500 });

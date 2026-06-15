@@ -18,7 +18,7 @@ interface ReviewRow {
 }
 
 export default async function handler(req: Request): Promise<Response> {
-  await runMigrations();
+// Migrations removed from request path for performance
 
   const url = new URL(req.url);
   const lessonId = url.searchParams.get('lessonId');
@@ -32,13 +32,13 @@ export default async function handler(req: Request): Promise<Response> {
 
       const lid = Number(lessonId);
       const cardRows = await sql`SELECT * FROM cards WHERE lesson_id = ${lid}`;
-      const cards = cardRows as CardRow[];
+      const cards = cardRows as unknown as CardRow[];
 
       const cardIds = cards.map((c) => c.id);
       let reviews: ReviewRow[] = [];
       if (cardIds.length > 0) {
         const reviewRows = await sql`SELECT * FROM review_records WHERE card_id = ANY(${cardIds})`;
-        reviews = reviewRows as ReviewRow[];
+        reviews = reviewRows as unknown as ReviewRow[];
       }
       const reviewMap = new Map(reviews.map((r) => [r.card_id, r]));
 
