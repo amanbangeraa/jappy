@@ -27,9 +27,8 @@ export async function executeQuery<T = Record<string, unknown>>(queryText: strin
   const connectionString = getConnectionString()
   const endpoint = getHttpEndpoint()
 
-  // Replace $1, $2, ... style placeholders with the actual values
   let finalQuery = queryText
-  for (let i = 0; i < params.length; i++) {
+  for (let i = params.length - 1; i >= 0; i--) {
     const param = params[i]
     let value: string
     if (param === null || param === undefined) {
@@ -47,7 +46,7 @@ export async function executeQuery<T = Record<string, unknown>>(queryText: strin
     } else {
       value = `'${String(param).replace(/'/g, "''")}'`
     }
-    finalQuery = finalQuery.replace(new RegExp('\\$' + (i + 1) + '\\b', 'g'), value)
+    finalQuery = finalQuery.replace(new RegExp('\\$' + (i + 1) + '\\b', 'g'), value.replace(/\$/g, '$$$$'))
   }
 
   const body = JSON.stringify({ query: finalQuery })
