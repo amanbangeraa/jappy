@@ -103,7 +103,7 @@ export function useSession(lessonId: number | 'all') {
       grade,
     });
 
-    // Persist to API — fire-and-forget so the UI advances instantly
+    // Compute updated SM2 state
     const existing: ReviewRecord = {
       cardId: card.id!,
       interval: card.interval ?? 1,
@@ -114,29 +114,41 @@ export function useSession(lessonId: number | 'all') {
 
     const updated = updateReview(existing, grade);
 
-    // Don't await — submit in the background, revert on failure
-    submitGrade({
-      cardId: card.id!,
-      grade,
-      interval: updated.interval,
-      easeFactor: updated.easeFactor,
-      repetitions: updated.repetitions,
-      dueDate: updated.dueDate,
-    }).catch((err) => {
+    // Persist to API — await so we don't advance before DB confirms
+    try {
+      await submitGrade({
+        cardId: card.id!,
+        grade,
+        interval: updated.interval,
+        easeFactor: updated.easeFactor,
+        repetitions: updated.repetitions,
+        dueDate: updated.dueDate,
+      });
+    } catch (err) {
+      // Revert optimistic result on failure
       resultsRef.current = resultsRef.current.filter(
         (r) => !(r.cardId === card.id! && r.grade === grade)
       );
       setError(err instanceof Error ? err.message : 'Failed to save grade');
       rerender();
-    });
-
-    // Re-queue if missed and not already re-queued this session
-    if (grade < 2 && !requeuedRef.current.has(card.id!)) {
-      requeuedRef.current.add(card.id!);
-      queueRef.current = [...queue, { ...card }];
+      return; // Don't advance — let the user retry
     }
 
-    // Advance immediately — no waiting for API
+    // Re-queue if missed and not already re-queued this session.
+    // Use the UPDATED SM2 values so the re-queued card has correct
+    // interval/repetitions/easeFactor for the next attempt.
+    if (grade < 2 && !requeuedRef.current.has(card.id!)) {
+      requeuedRef.current.add(card.id!);
+      queueRef.current = [...queue, {
+        ...card,
+        interval: updated.interval,
+        easeFactor: updated.easeFactor,
+        repetitions: updated.repetitions,
+        dueDate: updated.dueDate,
+      }];
+    }
+
+    // Advance to the next card
     const nextIndex = index + 1;
     if (nextIndex >= queueRef.current.length) {
       indexRef.current = nextIndex;
