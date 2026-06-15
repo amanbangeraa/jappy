@@ -28,25 +28,28 @@ interface GradeRequest {
   dueDate: number;
 }
 
-export default async function handler(req: Request): Promise<Response> {
+export default async function handler(req: any, res?: any): Promise<any> {
+  const sendResponse = (data: any, status = 200) => {
+    if (res) return res.status(status).json(data);
+    return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
+  };
+
 // Migrations removed from request path for performance
 
-  let url: URL;
-  let lessonId: string | null;
+  let lessonId: string | null = null;
 
   try {
-    url = new URL(req.url, 'http://localhost');
-    lessonId = url.searchParams.get('lessonId');
+    lessonId = req.query?.lessonId ?? new URL(req.url || '', 'http://localhost').searchParams.get('lessonId');
   } catch (err) {
     console.error('Initialization error:', err);
-    return Response.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+    return sendResponse({ error: err instanceof Error ? err.message : String(err) }, 500);
   }
 
   // ── GET /api/review?lessonId=X — get due cards ──
   if (req.method === 'GET') {
     try {
       if (!lessonId) {
-        return Response.json({ error: 'lessonId query param required' }, { status: 400 });
+        return sendResponse({ error: 'lessonId query param required' }, 400);
       }
 
       const lid = Number(lessonId);
@@ -87,18 +90,18 @@ export default async function handler(req: Request): Promise<Response> {
           return review.due_date <= endOfToday;
         });
 
-      return Response.json(dueCards);
+      return sendResponse(dueCards);
     } catch (err) {
       console.error('GET /api/review error:', err);
-      return Response.json({ error: 'Failed to fetch due cards' }, { status: 500 });
+      return sendResponse({ error: 'Failed to fetch due cards' }, 500);
     }
   }
 
   // ── POST /api/review — grade a card ──
   if (req.method === 'POST') {
     try {
-      const body = await req.json() as GradeRequest;
-      const { cardId, grade, interval, easeFactor, repetitions, dueDate } = body;
+      const body = req.body ? (typeof req.body === 'string' ? JSON.parse(req.body) : req.body) : await req.json();
+      const { cardId, grade, interval, easeFactor, repetitions, dueDate } = body as GradeRequest;
 
       // Single multi-statement query: upsert review record + log session (1 curl call)
       await sql`
@@ -113,12 +116,12 @@ export default async function handler(req: Request): Promise<Response> {
         VALUES (${cardId}, ${grade}, ${Date.now()})
       `;
 
-      return Response.json({ ok: true });
+      return sendResponse({ ok: true });
     } catch (err) {
       console.error('POST /api/review error:', err);
-      return Response.json({ error: 'Failed to save review' }, { status: 500 });
+      return sendResponse({ error: 'Failed to save review' }, 500);
     }
   }
 
-  return Response.json({ error: 'Method not allowed' }, { status: 405 });
+  return sendResponse({ error: 'Method not allowed' }, 405);
 }

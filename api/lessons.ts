@@ -15,19 +15,22 @@ interface LessonStats {
   lastStudied: number | null;
 }
 
-export default async function handler(req: Request): Promise<Response> {
-  let url: URL;
-  let id: string | null;
-  let level: string | null;
+export default async function handler(req: any, res?: any): Promise<any> {
+  const sendResponse = (data: any, status = 200) => {
+    if (res) return res.status(status).json(data);
+    return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
+  };
+
+  let id: string | null = null;
+  let level: string | null = null;
 
   try {
     await runMigrations();
-    url = new URL(req.url, 'http://localhost');
-    id = url.searchParams.get('id');
-    level = url.searchParams.get('level');
+    id = req.query?.id ?? new URL(req.url || '', 'http://localhost').searchParams.get('id');
+    level = req.query?.level ?? new URL(req.url || '', 'http://localhost').searchParams.get('level');
   } catch (err) {
     console.error('Initialization error:', err);
-    return Response.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+    return sendResponse({ error: err instanceof Error ? err.message : String(err) }, 500);
   }
 
   // ── GET /api/lessons — list all lessons with stats ──
@@ -37,9 +40,9 @@ export default async function handler(req: Request): Promise<Response> {
         const rows = await sql`SELECT * FROM lessons WHERE id = ${Number(id)}`;
         const lesson = rows as unknown as LessonRow[];
         if (lesson.length === 0) {
-          return Response.json({ error: 'Lesson not found' }, { status: 404 });
+          return sendResponse({ error: 'Lesson not found' }, 404);
         }
-        return Response.json({
+        return sendResponse({
           id: lesson[0].id,
           name: lesson[0].name,
           level: lesson[0].level,
@@ -93,17 +96,17 @@ export default async function handler(req: Request): Promise<Response> {
         })
       );
 
-      return Response.json(enriched);
+      return sendResponse(enriched);
     } catch (err) {
       console.error('GET /api/lessons error:', err);
-      return Response.json({ error: 'Failed to fetch lessons' }, { status: 500 });
+      return sendResponse({ error: 'Failed to fetch lessons' }, 500);
     }
   }
 
   // ── POST /api/lessons — import new lesson from CSV data ──
   if (req.method === 'POST') {
     try {
-      const body = await req.json();
+      const body = req.body ? (typeof req.body === 'string' ? JSON.parse(req.body) : req.body) : await req.json();
       const { name, level: lessonLevel, cards: rows } = body as {
         name: string;
         level: string;
@@ -111,7 +114,7 @@ export default async function handler(req: Request): Promise<Response> {
       };
 
       if (!name || !rows || rows.length === 0) {
-        return Response.json({ error: 'Missing name or cards' }, { status: 400 });
+        return sendResponse({ error: 'Missing name or cards' }, 400);
       }
 
       const validLevels = ['N1', 'N2', 'N3', 'N4', 'N5'];
@@ -121,7 +124,7 @@ export default async function handler(req: Request): Promise<Response> {
       const existingRows = await sql`SELECT id FROM lessons WHERE name = ${name}`;
       const existing = existingRows as unknown as { id: number }[];
       if (existing.length > 0) {
-        return Response.json({ error: `"${name}" already exists` }, { status: 409 });
+        return sendResponse({ error: `"${name}" already exists` }, 409);
       }
 
       // Insert lesson (no transaction — Neon HTTP endpoint uses connection-per-request)
@@ -152,7 +155,7 @@ export default async function handler(req: Request): Promise<Response> {
         throw cardErr;
       }
 
-      return Response.json({
+      return sendResponse({
         id: lesson[0].id,
         name: lesson[0].name,
         level: lesson[0].level,
@@ -162,10 +165,10 @@ export default async function handler(req: Request): Promise<Response> {
           dueCards: rows.length,
           lastStudied: null,
         },
-      }, { status: 201 });
+      }, 201);
     } catch (err) {
       console.error('POST /api/lessons error:', err);
-      return Response.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
+      return sendResponse({ error: err instanceof Error ? err.message : String(err) }, 500);
     }
   }
 
@@ -173,12 +176,12 @@ export default async function handler(req: Request): Promise<Response> {
   if (req.method === 'DELETE' && id) {
     try {
       await sql`DELETE FROM lessons WHERE id = ${Number(id)}`;
-      return Response.json({ ok: true });
+      return sendResponse({ ok: true });
     } catch (err) {
       console.error('DELETE /api/lessons error:', err);
-      return Response.json({ error: 'Failed to delete lesson' }, { status: 500 });
+      return sendResponse({ error: 'Failed to delete lesson' }, 500);
     }
   }
 
-  return Response.json({ error: 'Method not allowed' }, { status: 405 });
+  return sendResponse({ error: 'Method not allowed' }, 405);
 }

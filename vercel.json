@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "edge"
-    }
-  },
   "rewrites": [
     { "source": "/((?!api/|_next/|favicon\\.svg|icons\\.svg|assets/).*)", "destination": "/index.html" }
   ]
