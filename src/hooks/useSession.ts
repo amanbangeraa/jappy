@@ -154,10 +154,11 @@ export function useSession(lessonId: number | 'all') {
   const queue       = queueRef.current;
   const currentCard = queue[indexRef.current] ?? null;
 
-  // Progress: show position among unique cards, not counting re-queued duplicates
-  const uniqueTotal   = new Set(queue.map((c) => c.id)).size;
-  const uniqueDone    = new Set(resultsRef.current.map((r) => r.cardId)).size;
-  const progress      = { current: Math.min(uniqueDone + 1, uniqueTotal), total: uniqueTotal };
+  // Progress: track actual queue position (including re-queued cards from misses)
+  const progress = {
+    current: indexRef.current + 1,
+    total: queue.length,
+  };
 
   return {
     currentCard,

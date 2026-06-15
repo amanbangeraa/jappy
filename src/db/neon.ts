@@ -53,7 +53,7 @@ function executeQuery<T = Record<string, unknown>>(queryText: string, params: un
     } else {
       value = `'${String(param).replace(/'/g, "''")}'`
     }
-    finalQuery = finalQuery.replace(`$${i + 1}`, value)
+    finalQuery = finalQuery.replaceAll(`$${i + 1}`, value)
   }
 
   const body = JSON.stringify({ query: finalQuery })

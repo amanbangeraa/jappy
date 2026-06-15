@@ -90,18 +90,18 @@ export default async function handler(req: Request): Promise<Response> {
       const body = await req.json() as GradeRequest;
       const { cardId, grade, interval, easeFactor, repetitions, dueDate } = body;
 
-      // Upsert review record
-      const existingRows = await sql`SELECT id FROM review_records WHERE card_id = ${cardId}`;
-      const existing = existingRows as unknown as { id: number }[];
-
-      if (existing.length > 0) {
-        await sql`UPDATE review_records SET interval = ${interval}, ease_factor = ${easeFactor}, repetitions = ${repetitions}, due_date = ${dueDate} WHERE card_id = ${cardId}`;
-      } else {
-        await sql`INSERT INTO review_records (card_id, interval, ease_factor, repetitions, due_date) VALUES (${cardId}, ${interval}, ${easeFactor}, ${repetitions}, ${dueDate})`;
-      }
-
-      // Log the session
-      await sql`INSERT INTO session_logs (card_id, grade, reviewed_at) VALUES (${cardId}, ${grade}, ${Date.now()})`;
+      // Single multi-statement query: upsert review record + log session (1 curl call)
+      await sql`
+        INSERT INTO review_records (card_id, interval, ease_factor, repetitions, due_date)
+        VALUES (${cardId}, ${interval}, ${easeFactor}, ${repetitions}, ${dueDate})
+        ON CONFLICT (card_id) DO UPDATE SET
+          interval = ${interval},
+          ease_factor = ${easeFactor},
+          repetitions = ${repetitions},
+          due_date = ${dueDate};
+        INSERT INTO session_logs (card_id, grade, reviewed_at)
+        VALUES (${cardId}, ${grade}, ${Date.now()})
+      `;
 
       return Response.json({ ok: true });
     } catch (err) {
