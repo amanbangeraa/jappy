@@ -53,7 +53,7 @@ export function executeQuery<T = Record<string, unknown>>(queryText: string, par
     } else {
       value = `'${String(param).replace(/'/g, "''")}'`
     }
-    finalQuery = finalQuery.replaceAll(`$${i + 1}`, value)
+    finalQuery = finalQuery.replace(new RegExp('\\$' + (i + 1) + '\\b', 'g'), value)
   }
 
   const body = JSON.stringify({ query: finalQuery })
