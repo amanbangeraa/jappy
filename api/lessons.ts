@@ -1,5 +1,7 @@
 import { sql, runMigrations, executeQuery } from '../src/db/neon';
 
+export const config = { runtime: 'edge' };
+
 interface LessonRow {
   id: number;
   name: string;
@@ -120,8 +122,9 @@ export default async function handler(req: Request): Promise<Response> {
       const lessonId = lesson[0].id;
 
       // Bulk insert cards in batches to avoid per-row HTTP round-trips
-      const BATCH = 100;
+      const BATCH = 1000;
       try {
+        const insertPromises = [];
         for (let i = 0; i < rows.length; i += BATCH) {
           const chunk = rows.slice(i, i + BATCH);
           const values: string[] = [];
@@ -132,8 +135,9 @@ export default async function handler(req: Request): Promise<Response> {
             params.push(lessonId, row.japanese, row.english, row.reading ?? null);
             idx += 4;
           }
-          await executeQuery(`INSERT INTO cards (lesson_id, japanese, english, reading) VALUES ${values.join(', ')}`, params);
+          insertPromises.push(executeQuery(`INSERT INTO cards (lesson_id, japanese, english, reading) VALUES ${values.join(', ')}`, params));
         }
+        await Promise.all(insertPromises);
       } catch (cardErr) {
         // Cleanup: delete the lesson if card inserts fail
         await sql`DELETE FROM lessons WHERE id = ${lessonId}`;
@@ -153,7 +157,7 @@ export default async function handler(req: Request): Promise<Response> {
       }, { status: 201 });
     } catch (err) {
       console.error('POST /api/lessons error:', err);
-      return Response.json({ error: 'Failed to import lesson' }, { status: 500 });
+      return Response.json({ error: err instanceof Error ? err.message : String(err) }, { status: 500 });
     }
   }
 

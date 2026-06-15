@@ -1,5 +1,7 @@
 import { sql, runMigrations } from '../src/db/neon';
 
+export const config = { runtime: 'edge' };
+
 interface CardRow {
   id: number;
   lesson_id: number;
