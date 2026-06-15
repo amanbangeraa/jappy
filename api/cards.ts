@@ -27,11 +27,10 @@ export default async function handler(req: any, res?: any): Promise<any> {
     return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
   };
 
-// Migrations removed from request path for performance
-
   let lessonId: string | null = null;
 
   try {
+    await runMigrations();
     lessonId = req.query?.lessonId ?? new URL(req.url || '', 'http://localhost').searchParams.get('lessonId');
   } catch (err) {
     console.error('Initialization error:', err);

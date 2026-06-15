@@ -36,11 +36,10 @@ export default async function handler(req: any, res?: any): Promise<any> {
     return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
   };
 
-// Migrations removed from request path for performance
-
   let lessonId: string | null = null;
 
   try {
+    await runMigrations();
     lessonId = req.query?.lessonId ?? new URL(req.url || '', 'http://localhost').searchParams.get('lessonId');
   } catch (err) {
     console.error('Initialization error:', err);
@@ -105,7 +104,7 @@ export default async function handler(req: any, res?: any): Promise<any> {
       const body = req.body ? (typeof req.body === 'string' ? JSON.parse(req.body) : req.body) : await req.json();
       const { cardId, grade, interval, easeFactor, repetitions, dueDate } = body as GradeRequest;
 
-      // Single multi-statement query: upsert review record + log session (1 curl call)
+      // Upsert the review record (two separate calls — Neon HTTP endpoint only runs one statement per request)
       await sql`
         INSERT INTO review_records (card_id, interval, ease_factor, repetitions, due_date)
         VALUES (${cardId}, ${interval}, ${easeFactor}, ${repetitions}, ${dueDate})
@@ -113,7 +112,10 @@ export default async function handler(req: any, res?: any): Promise<any> {
           interval = ${interval},
           ease_factor = ${easeFactor},
           repetitions = ${repetitions},
-          due_date = ${dueDate};
+          due_date = ${dueDate}
+      `;
+
+      await sql`
         INSERT INTO session_logs (card_id, grade, reviewed_at)
         VALUES (${cardId}, ${grade}, ${Date.now()})
       `;
