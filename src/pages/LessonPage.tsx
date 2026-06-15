@@ -8,7 +8,7 @@ const LessonPage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const lessonId = Number(id);
-  const { lessons } = useLessons();
+  const { lessons, removeLesson } = useLessons();
   const { cards, loading } = useCards(lessonId);
 
   const lesson = lessons.find((l) => l.id === lessonId);
@@ -29,6 +29,14 @@ const LessonPage: FC = () => {
   const dueCards   = lesson?.stats.dueCards ?? 0;
   const pct = totalCards > 0 ? Math.round(((totalCards - dueCards) / totalCards) * 100) : 0;
 
+  const handleDelete = async () => {
+    if (!lesson?.id) return;
+    const confirmed = window.confirm(`Delete "${lesson.name}" and all its cards? This cannot be undone.`);
+    if (!confirmed) return;
+    await removeLesson(lesson.id);
+    navigate('/');
+  };
+
   return (
     <div className="page">
 
@@ -40,7 +48,7 @@ const LessonPage: FC = () => {
       {/* ── Header ── */}
       <div style={{ marginBottom: 28 }} className="anim-fadeInUp">
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <h1 className="heading-lg" style={{ marginBottom: 4 }}>
               {lesson?.name ?? 'Loading…'}
             </h1>
@@ -51,15 +59,26 @@ const LessonPage: FC = () => {
               )}
             </p>
           </div>
-          {lesson && hasDue && (
-            <button
-              className="btn btn-green btn-sm"
-              onClick={() => navigate(`/study?lesson=${lessonId}`)}
-              style={{ flexShrink: 0, marginTop: 4 }}
-            >
-              <Icon name="play" size={14} color="#fff" /> Study now
-            </button>
-          )}
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+            {lesson && hasDue && (
+              <button
+                className="btn btn-green btn-sm"
+                onClick={() => navigate(`/study?lesson=${lessonId}`)}
+              >
+                <Icon name="play" size={14} color="#fff" /> Study now
+              </button>
+            )}
+            {lesson && (
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={handleDelete}
+                style={{ padding: '10px 12px' }}
+                title="Delete lesson"
+              >
+                <Icon name="x" size={14} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Progress */}

@@ -1,15 +1,13 @@
 import { type FC, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
-import { db } from '../db';
 import { parseCSV } from '../utils/csvParser';
 import LessonCard from '../components/LessonCard';
 import Icon from '../components/Icon';
-import type { Lesson } from '../types';
 
 const HomePage: FC = () => {
   const navigate = useNavigate();
-  const { lessons, loading, reload } = useLessons();
+  const { lessons, loading, importCSV } = useLessons();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +24,8 @@ const HomePage: FC = () => {
     try {
       const lessonName = file.name.replace(/\.csv$/i, '');
 
-      const existing = await db.lessons.where('name').equals(lessonName).first();
+      // Check for duplicate
+      const existing = lessons.find((l) => l.name === lessonName);
       if (existing) {
         setError(`"${lessonName}" already exists. Delete it first to re-import.`);
         setImporting(false);
@@ -37,13 +36,9 @@ const HomePage: FC = () => {
       if (errors.length > 0) { setError(errors.join('\n')); setImporting(false); return; }
       if (rows.length === 0) { setError('CSV has no valid rows.'); setImporting(false); return; }
 
-      const lessonId = await db.lessons.add({ name: lessonName, importedAt: Date.now() } as Lesson);
-      await db.cards.bulkAdd(rows.map((row) => ({
-        lessonId, japanese: row.japanese, english: row.english, reading: row.reading,
-      })));
+      const lesson = await importCSV(lessonName, rows);
 
-      setSuccessMsg({ text: `Imported "${lessonName}" — ${rows.length} cards`, lessonId });
-      await reload();
+      setSuccessMsg({ text: `Imported "${lessonName}" — ${rows.length} cards`, lessonId: lesson.id! });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Import failed');
     } finally {

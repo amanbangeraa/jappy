@@ -12,6 +12,16 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
   const truncate = (text: string, maxLen: number) =>
     text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
 
+  // Dynamically scale Japanese font size based on text length so longer
+  // words / phrases always fit comfortably inside the card.
+  const jpFontSize = (() => {
+    const len = japanese.length;
+    if (len <= 3) return 'clamp(48px, 12vw, 72px)';
+    if (len <= 6) return 'clamp(36px, 9vw, 56px)';
+    if (len <= 9) return 'clamp(28px, 7vw, 44px)';
+    return 'clamp(22px, 5.5vw, 36px)';
+  })();
+
   return (
     <div className="flip-container" onClick={onFlip} style={{ cursor: 'pointer', userSelect: 'none' }}>
       <div className={`flip-inner${flipped ? ' flipped' : ''}`}>
@@ -20,11 +30,15 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
         <div className="flip-face">
           <span className="tap-hint">Tap to reveal</span>
           <span className="font-jp" style={{
-            fontSize: 'clamp(40px, 10vw, 64px)',
+            fontSize: jpFontSize,
             fontWeight: 700,
             color: 'var(--heading)',
-            lineHeight: 1.2,
+            lineHeight: 1.3,
             textAlign: 'center',
+            wordBreak: 'keep-all',
+            overflowWrap: 'anywhere',
+            maxWidth: '100%',
+            padding: '0 4px',
           }}>
             {truncate(japanese, 12)}
           </span>

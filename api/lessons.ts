@@ -1,0 +1,151 @@
+import { sql, runMigrations } from '../src/db/neon';
+
+interface LessonRow {
+  id: number;
+  name: string;
+  imported_at: number;
+}
+
+interface LessonStats {
+  totalCards: number;
+  dueCards: number;
+  lastStudied: number | null;
+}
+
+export default async function handler(req: Request): Promise<Response> {
+  await runMigrations();
+
+  const url = new URL(req.url);
+  const id = url.searchParams.get('id');
+
+  // ── GET /api/lessons — list all lessons with stats ──
+  if (req.method === 'GET') {
+    try {
+      if (id) {
+        const rows = await sql`SELECT * FROM lessons WHERE id = ${Number(id)}`;
+        const lesson = rows as LessonRow[];
+        if (lesson.length === 0) {
+          return Response.json({ error: 'Lesson not found' }, { status: 404 });
+        }
+        return Response.json({
+          id: lesson[0].id,
+          name: lesson[0].name,
+          importedAt: lesson[0].imported_at,
+        });
+      }
+
+      const rows = await sql`SELECT * FROM lessons ORDER BY imported_at DESC`;
+      const lessons = rows as LessonRow[];
+
+      const now = new Date();
+      now.setHours(23, 59, 59, 999);
+      const endOfToday = now.getTime();
+
+      // Enrich each lesson with stats
+      const enriched = await Promise.all(
+        lessons.map(async (lesson) => {
+          const cardRows = await sql`SELECT id FROM cards WHERE lesson_id = ${lesson.id}`;
+          const cards = cardRows as { id: number }[];
+          const totalCards = cards.length;
+          const cardIds = cards.map((c) => c.id);
+
+          let dueCards = 0;
+          if (cardIds.length > 0) {
+            const reviewRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds})`;
+            const reviewed = reviewRows as { card_id: number }[];
+            const reviewedIds = new Set(reviewed.map((r) => r.card_id));
+            const unreviewed = cardIds.filter((cid) => !reviewedIds.has(cid));
+
+            const dueRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds}) AND due_date <= ${endOfToday}`;
+            const due = dueRows as { card_id: number }[];
+            const dueRecordIds = new Set(due.map((r) => r.card_id));
+            dueCards = unreviewed.length + dueRecordIds.size;
+          }
+
+          // last studied
+          let lastStudied: number | null = null;
+          if (cardIds.length > 0) {
+            const logRows = await sql`SELECT reviewed_at FROM session_logs WHERE card_id = ANY(${cardIds}) ORDER BY reviewed_at DESC LIMIT 1`;
+            const logs = logRows as { reviewed_at: number }[];
+            lastStudied = logs.length > 0 ? logs[0].reviewed_at : null;
+          }
+
+          const stats: LessonStats = { totalCards, dueCards, lastStudied };
+          return { id: lesson.id, name: lesson.name, importedAt: lesson.imported_at, stats };
+        })
+      );
+
+      return Response.json(enriched);
+    } catch (err) {
+      console.error('GET /api/lessons error:', err);
+      return Response.json({ error: 'Failed to fetch lessons' }, { status: 500 });
+    }
+  }
+
+  // ── POST /api/lessons — import new lesson from CSV data ──
+  if (req.method === 'POST') {
+    try {
+      const body = await req.json();
+      const { name, cards: rows } = body as {
+        name: string;
+        cards: { japanese: string; english: string; reading?: string }[];
+      };
+
+      if (!name || !rows || rows.length === 0) {
+        return Response.json({ error: 'Missing name or cards' }, { status: 400 });
+      }
+
+      // Check for duplicate
+      const existingRows = await sql`SELECT id FROM lessons WHERE name = ${name}`;
+      const existing = existingRows as { id: number }[];
+      if (existing.length > 0) {
+        return Response.json({ error: `"${name}" already exists` }, { status: 409 });
+      }
+
+      // Transaction: insert lesson + all cards atomically
+      await sql`BEGIN`;
+      try {
+        const result = await sql`INSERT INTO lessons (name, imported_at) VALUES (${name}, ${Date.now()}) RETURNING id, name, imported_at`;
+        const lesson = result as LessonRow[];
+        const lessonId = lesson[0].id;
+
+        // Bulk insert cards
+        for (const row of rows) {
+          await sql`INSERT INTO cards (lesson_id, japanese, english, reading) VALUES (${lessonId}, ${row.japanese}, ${row.english}, ${row.reading ?? null})`;
+        }
+
+        await sql`COMMIT`;
+
+        return Response.json({
+          id: lesson[0].id,
+          name: lesson[0].name,
+          importedAt: lesson[0].imported_at,
+          stats: {
+            totalCards: rows.length,
+            dueCards: rows.length,
+            lastStudied: null,
+          },
+        }, { status: 201 });
+      } catch (_innerErr) {
+        await sql`ROLLBACK`;
+        throw _innerErr; // re-throw to outer catch for error response
+      }
+    } catch (err) {
+      console.error('POST /api/lessons error:', err);
+      return Response.json({ error: 'Failed to import lesson' }, { status: 500 });
+    }
+  }
+
+  // ── DELETE /api/lessons?id=X ──
+  if (req.method === 'DELETE' && id) {
+    try {
+      await sql`DELETE FROM lessons WHERE id = ${Number(id)}`;
+      return Response.json({ ok: true });
+    } catch (err) {
+      console.error('DELETE /api/lessons error:', err);
+      return Response.json({ error: 'Failed to delete lesson' }, { status: 500 });
+    }
+  }
+
+  return Response.json({ error: 'Method not allowed' }, { status: 405 });
+}

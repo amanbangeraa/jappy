@@ -1,14 +1,11 @@
 import { useState, useCallback, useRef } from 'react';
-import { db } from '../db';
-import { updateReview, freshRecord, QUALITY_MAP } from '../algorithms/sm2';
-import type { Card, Grade, SessionResult, SummaryData } from '../types';
-
-type QueueCard = Card & { dueDate?: number };
+import { fetchDueCards, submitGrade, type DueCard } from '../api/client';
+import { updateReview, QUALITY_MAP } from '../algorithms/sm2';
+import type { Grade, ReviewRecord, SessionResult, SummaryData } from '../types';
 
 export function useSession(lessonId: number | 'all') {
   // Use a ref as the source-of-truth for the queue to avoid stale closures.
-  // React state is only used to trigger re-renders.
-  const queueRef      = useRef<QueueCard[]>([]);
+  const queueRef      = useRef<DueCard[]>([]);
   const indexRef      = useRef(0);
   const resultsRef    = useRef<SessionResult[]>([]);
   // Track which card IDs have already been re-queued this session (1 re-queue max per card)
@@ -18,6 +15,7 @@ export function useSession(lessonId: number | 'all') {
   const [loading, setLoading]    = useState(true);
   const [finished, setFinished]  = useState(false);
   const [summary, setSummary]    = useState<SummaryData | null>(null);
+  const [error, setError]        = useState<string | null>(null);
 
   const rerender = () => forceUpdate((n) => n + 1);
 
@@ -40,32 +38,22 @@ export function useSession(lessonId: number | 'all') {
     setSummary(null);
 
     try {
-      let allCards: Card[];
       if (lessonId === 'all') {
-        allCards = await db.cards.toArray();
+        // For 'all', fetch all lessons first, then due cards for each
+        const { fetchLessons } = await import('../api/client');
+        const allLessons = await fetchLessons();
+        const dueCards: DueCard[] = [];
+        for (const lesson of allLessons) {
+          const cards = await fetchDueCards(lesson.id!);
+          for (const card of cards) {
+            dueCards.push(card);
+          }
+        }
+        queueRef.current = shuffle(dueCards);
       } else {
-        allCards = await db.cards.where('lessonId').equals(lessonId).toArray();
+        const cards = await fetchDueCards(lessonId);
+        queueRef.current = shuffle(cards);
       }
-
-      const cardIds = allCards.map((c) => c.id!);
-      const reviews = cardIds.length > 0
-        ? await db.reviewRecords.where('cardId').anyOf(cardIds).toArray()
-        : [];
-      const reviewMap = new Map(reviews.map((r) => [r.cardId, r]));
-
-      const now = new Date();
-      now.setHours(23, 59, 59, 999);
-      const endOfToday = now.getTime();
-
-      const dueCards = allCards
-        .map((card) => {
-          const review = reviewMap.get(card.id!);
-          if (!review) return { ...card, dueDate: 0 };
-          return { ...card, dueDate: review.dueDate };
-        })
-        .filter((card) => card.dueDate <= endOfToday);
-
-      queueRef.current = shuffle(dueCards);
       rerender();
     } catch (err) {
       console.error('Failed to start session:', err);
@@ -106,7 +94,7 @@ export function useSession(lessonId: number | 'all') {
     const card  = queue[index];
     const grade: Grade = QUALITY_MAP[gradeKey] ?? 0;
 
-    // Record result
+    // Record result optimistically
     resultsRef.current.push({
       cardId:   card.id!,
       japanese: card.japanese,
@@ -115,14 +103,33 @@ export function useSession(lessonId: number | 'all') {
       grade,
     });
 
-    // Persist to DB
-    const existing = await db.reviewRecords.where('cardId').equals(card.id!).first();
-    if (existing) {
-      await db.reviewRecords.update(existing.id!, updateReview(existing, grade));
-    } else {
-      await db.reviewRecords.add(updateReview(freshRecord(card.id!), grade));
+    // Persist to API — use the card's actual SM2 state from the server
+    const existing: ReviewRecord = {
+      cardId: card.id!,
+      interval: card.interval ?? 1,
+      easeFactor: card.easeFactor ?? 2.0,
+      repetitions: card.repetitions ?? 0,
+      dueDate: card.dueDate ?? 0,
+    };
+
+    const updated = updateReview(existing, grade);
+
+    try {
+      await submitGrade({
+        cardId: card.id!,
+        grade,
+        interval: updated.interval,
+        easeFactor: updated.easeFactor,
+        repetitions: updated.repetitions,
+        dueDate: updated.dueDate,
+      });
+    } catch (err) {
+      // Revert the optimistic result — the grade was never persisted
+      resultsRef.current.pop();
+      setError(err instanceof Error ? err.message : 'Failed to save grade');
+      rerender();
+      return; // don't advance — let the user retry
     }
-    await db.sessionLogs.add({ cardId: card.id!, grade, reviewedAt: Date.now() });
 
     // ── Re-queue logic ──
     // If missed AND this card hasn't been re-queued yet this session → push to end
@@ -158,6 +165,7 @@ export function useSession(lessonId: number | 'all') {
     finished,
     summary,
     progress,
+    error,
     startSession,
     gradeCard,
   };

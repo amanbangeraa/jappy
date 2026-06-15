@@ -1,34 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
-import { db } from '../db';
-import type { Card, ReviewRecord } from '../types';
+import { fetchCards, type CardWithReview } from '../api/client';
 
 export function useCards(lessonId: number | 'all') {
-  const [cards, setCards] = useState<(Card & { review?: ReviewRecord })[]>([]);
+  const [cards, setCards] = useState<CardWithReview[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadCards = useCallback(async () => {
+    if (lessonId === 'all') {
+      // For 'all', we still need to fetch — but the API doesn't support 'all' directly.
+      // This is handled by useSession which fetches due cards across all lessons.
+      // For the card listing page, we don't show 'all' — only individual lessons.
+      setCards([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
-      let allCards: Card[];
-      if (lessonId === 'all') {
-        allCards = await db.cards.toArray();
-      } else {
-        allCards = await db.cards.where('lessonId').equals(lessonId).toArray();
-      }
-
-      const cardIds = allCards.map((c) => c.id!);
-      const reviews =
-        cardIds.length > 0
-          ? await db.reviewRecords.where('cardId').anyOf(cardIds).toArray()
-          : [];
-      const reviewMap = new Map(reviews.map((r) => [r.cardId, r]));
-
-      const enriched = allCards.map((card) => ({
-        ...card,
-        review: reviewMap.get(card.id!),
-      }));
-
-      setCards(enriched);
+      const data = await fetchCards(lessonId);
+      setCards(data);
     } catch (err) {
       console.error('Failed to load cards:', err);
     } finally {
