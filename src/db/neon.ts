@@ -1,5 +1,3 @@
-import { exec } from 'child_process'
-
 // ── Connection setup ────────────────────────────────────────────────────────
 
 function getConnectionString(): string {
@@ -25,11 +23,7 @@ interface QueryResult<T = Record<string, unknown>> {
   rowCount: number
 }
 
-function escapeShell(s: string): string {
-  return s.replace(/'/g, `'\\''`)
-}
-
-export function executeQuery<T = Record<string, unknown>>(queryText: string, params: unknown[] = []): Promise<QueryResult<T>> {
+export async function executeQuery<T = Record<string, unknown>>(queryText: string, params: unknown[] = []): Promise<QueryResult<T>> {
   const connectionString = getConnectionString()
   const endpoint = getHttpEndpoint()
 
@@ -57,38 +51,33 @@ export function executeQuery<T = Record<string, unknown>>(queryText: string, par
   }
 
   const body = JSON.stringify({ query: finalQuery })
-  const escapedEndpoint = escapeShell(endpoint)
-  const escapedCS = escapeShell(connectionString)
-  const escapedBody = escapeShell(body)
 
-  const curlCmd = `curl -s -X POST '${escapedEndpoint}' \
-    -H 'Content-Type: application/json' \
-    -H 'Neon-Connection-String: ${escapedCS}' \
-    -d '${escapedBody}' \
-    --connect-timeout 10 --max-time 15`
-
-  return new Promise((resolve, reject) => {
-    exec(curlCmd, { maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
-      if (error) {
-        reject(new Error(`curl failed: ${error.message}. stderr: ${stderr.slice(0, 200)}`))
-        return
-      }
-      if (stderr && !stdout) {
-        reject(new Error(`curl error: ${stderr.slice(0, 200)}`))
-        return
-      }
-      try {
-        const parsed = JSON.parse(stdout.trim()) as QueryResult<T>
-        if ((parsed as unknown as { error?: string }).error) {
-          reject(new Error((parsed as unknown as { message: string }).message || 'Unknown database error'))
-        } else {
-          resolve(parsed)
-        }
-      } catch {
-        reject(new Error(`Failed to parse response: ${stdout.slice(0, 200)}`))
-      }
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Neon-Connection-String': connectionString,
+      },
+      body,
     })
-  })
+
+    if (!response.ok) {
+      const text = await response.text()
+      throw new Error(`HTTP error! status: ${response.status}, response: ${text.slice(0, 200)}`)
+    }
+
+    const parsed = await response.json() as QueryResult<T>
+    if ((parsed as any).error) {
+      throw new Error((parsed as any).message || 'Unknown database error')
+    }
+    return parsed
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`fetch failed: ${error.message}`)
+    }
+    throw new Error('Unknown fetch error')
+  }
 }
 
 /**
