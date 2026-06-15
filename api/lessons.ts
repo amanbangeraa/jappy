@@ -108,7 +108,16 @@ export default async function handler(req: any, res?: any): Promise<any> {
   // ── POST /api/lessons — import new lesson from CSV data ──
   if (req.method === 'POST') {
     try {
-      const body = req.body ? (typeof req.body === 'string' ? JSON.parse(req.body) : req.body) : await req.json();
+      // req.body can be:
+      //   - a plain object (Vercel Node runtime already parsed it)
+      //   - a JSON string  (some middleware)
+      //   - a ReadableStream (Web Request in dev via vite plugin) → must use req.json()
+      const body =
+        req.body !== undefined && req.body !== null && typeof req.body !== 'object'
+          ? JSON.parse(req.body as string)                           // string body
+          : req.body && !(req.body instanceof ReadableStream)
+            ? req.body                                               // already-parsed object
+            : await req.json();                                      // Web Request / ReadableStream
       const { name, level: lessonLevel, cards: rows } = body as {
         name: string;
         level: string;

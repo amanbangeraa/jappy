@@ -101,7 +101,12 @@ export default async function handler(req: any, res?: any): Promise<any> {
   // ── POST /api/review — grade a card ──
   if (req.method === 'POST') {
     try {
-      const body = req.body ? (typeof req.body === 'string' ? JSON.parse(req.body) : req.body) : await req.json();
+      const body =
+        req.body !== undefined && req.body !== null && typeof req.body !== 'object'
+          ? JSON.parse(req.body as string)
+          : req.body && !(req.body instanceof ReadableStream)
+            ? req.body
+            : await req.json();
       const { cardId, grade, interval, easeFactor, repetitions, dueDate } = body as GradeRequest;
 
       // Upsert the review record (two separate calls — Neon HTTP endpoint only runs one statement per request)
