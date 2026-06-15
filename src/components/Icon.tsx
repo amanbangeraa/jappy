@@ -25,7 +25,7 @@ interface IconProps {
   style?: React.CSSProperties;
 }
 
-const paths: Record<IconName, JSX.Element> = {
+const paths: Record<IconName, React.JSX.Element> = {
   'home': (
     <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z" />
   ),
