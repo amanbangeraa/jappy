@@ -1,4 +1,4 @@
-import type { Lesson, Card, ReviewRecord, LessonStats } from '../types';
+import type { Lesson, Card, ReviewRecord, LessonStats, JLPTLevel } from '../types';
 
 const API_BASE = '/api';
 
@@ -20,14 +20,19 @@ export interface LessonWithStats extends Lesson {
   stats: LessonStats;
 }
 
-export async function fetchLessons(): Promise<LessonWithStats[]> {
-  return request<LessonWithStats[]>('/lessons');
+export async function fetchLessons(level?: JLPTLevel): Promise<LessonWithStats[]> {
+  const query = level ? `?level=${level}` : '';
+  return request<LessonWithStats[]>(`/lessons${query}`);
 }
 
-export async function importLesson(name: string, cards: { japanese: string; english: string; reading?: string }[]): Promise<LessonWithStats> {
+export async function importLesson(
+  name: string,
+  level: JLPTLevel,
+  cards: { japanese: string; english: string; reading?: string }[],
+): Promise<LessonWithStats> {
   return request<LessonWithStats>('/lessons', {
     method: 'POST',
-    body: JSON.stringify({ name, cards }),
+    body: JSON.stringify({ name, level, cards }),
   });
 }
 

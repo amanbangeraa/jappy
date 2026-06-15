@@ -2,6 +2,8 @@ import { type FC } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
 import { useCards } from '../hooks/useCards';
+import { LEVEL_COLORS, type JLPTLevel } from '../types';
+import { getRoleHomePath } from '../utils/role';
 import Icon from '../components/Icon';
 
 const LessonPage: FC = () => {
@@ -17,7 +19,7 @@ const LessonPage: FC = () => {
     return (
       <div className="page-center">
         <p style={{ color: 'var(--text-muted)', marginBottom: 20 }}>Lesson not found.</p>
-        <button className="btn btn-ghost" onClick={() => navigate('/')}>
+        <button className="btn btn-ghost" onClick={() => navigate(getRoleHomePath())}>
           <Icon name="chevron-left" size={16} /> Go home
         </button>
       </div>
@@ -28,30 +30,38 @@ const LessonPage: FC = () => {
   const totalCards = lesson?.stats.totalCards ?? 0;
   const dueCards   = lesson?.stats.dueCards ?? 0;
   const pct = totalCards > 0 ? Math.round(((totalCards - dueCards) / totalCards) * 100) : 0;
+  const levelColor = lesson ? LEVEL_COLORS[lesson.level as JLPTLevel] ?? 'var(--text-muted)' : 'var(--text-muted)';
 
   const handleDelete = async () => {
     if (!lesson?.id) return;
     const confirmed = window.confirm(`Delete "${lesson.name}" and all its cards? This cannot be undone.`);
     if (!confirmed) return;
     await removeLesson(lesson.id);
-    navigate('/');
+    navigate(getRoleHomePath());
   };
 
   return (
     <div className="page">
 
       {/* ── Back ── */}
-      <button className="back-btn" onClick={() => navigate('/')}>
-        <Icon name="chevron-left" size={16} /> Back to lessons
+      <button className="back-btn" onClick={() => navigate(-1)}>
+        <Icon name="chevron-left" size={16} /> Back
       </button>
 
       {/* ── Header ── */}
       <div style={{ marginBottom: 28 }} className="anim-fadeInUp">
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h1 className="heading-lg" style={{ marginBottom: 4 }}>
-              {lesson?.name ?? 'Loading…'}
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+              <h1 className="heading-lg" style={{ marginBottom: 0 }}>
+                {lesson?.name ?? 'Loading…'}
+              </h1>
+              {lesson && (
+                <span className="level-badge" style={{ background: `${levelColor}18`, color: levelColor, fontSize: 12, padding: '3px 10px' }}>
+                  {lesson.level}
+                </span>
+              )}
+            </div>
             <p style={{ color: 'var(--text-muted)', fontSize: 14, fontWeight: 600 }}>
               {totalCards} cards
               {hasDue && (

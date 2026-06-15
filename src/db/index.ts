@@ -23,6 +23,13 @@ export class JappyDB extends Dexie {
       reviewRecords: '++id, cardId, dueDate',
       sessionLogs: '++id, cardId, reviewedAt',
     });
+    // v3 — add level index for JLPT N1-N5 filtering
+    this.version(3).stores({
+      lessons: '++id, name, level, importedAt',
+      cards: '++id, lessonId, japanese',
+      reviewRecords: '++id, cardId, dueDate',
+      sessionLogs: '++id, cardId, reviewedAt',
+    });
   }
 }
 

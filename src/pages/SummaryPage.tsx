@@ -2,6 +2,7 @@ import { type FC, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import XPBadge from '../components/XPBadge';
 import Icon from '../components/Icon';
+import { getRoleHomePath } from '../utils/role';
 import type { SummaryData } from '../types';
 
 const SummaryPage: FC = () => {
@@ -21,7 +22,7 @@ const SummaryPage: FC = () => {
     return (
       <div className="page-center" style={{ gap: 0 }}>
         <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontWeight: 600 }}>No session data found.</p>
-        <button className="btn btn-green" onClick={() => navigate('/')}><Icon name="home" size={16} /> Go home</button>
+        <button className="btn btn-green" onClick={() => navigate(getRoleHomePath())}><Icon name="home" size={16} /> Go home</button>
       </div>
     );
   }
@@ -171,10 +172,10 @@ const SummaryPage: FC = () => {
 
       {/* ── Actions ── */}
       <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-        <button className="btn btn-ghost" onClick={() => navigate('/')}>
+        <button className="btn btn-ghost" onClick={() => navigate(getRoleHomePath())}>
           <Icon name="home" size={16} /> Home
         </button>
-        <button className="btn btn-green" onClick={() => navigate('/')}>
+        <button className="btn btn-green" onClick={() => navigate(getRoleHomePath())}>
           <Icon name="lightning" size={16} /> Study again
         </button>
       </div>

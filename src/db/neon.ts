@@ -29,7 +29,7 @@ function escapeShell(s: string): string {
   return s.replace(/'/g, `'\\''`)
 }
 
-function executeQuery<T = Record<string, unknown>>(queryText: string, params: unknown[] = []): Promise<QueryResult<T>> {
+export function executeQuery<T = Record<string, unknown>>(queryText: string, params: unknown[] = []): Promise<QueryResult<T>> {
   const connectionString = getConnectionString()
   const endpoint = getHttpEndpoint()
 
@@ -113,6 +113,7 @@ export async function runMigrations(): Promise<void> {
     CREATE TABLE IF NOT EXISTS lessons (
       id          SERIAL PRIMARY KEY,
       name        TEXT NOT NULL UNIQUE,
+      level       TEXT NOT NULL DEFAULT 'N5',
       imported_at BIGINT NOT NULL DEFAULT 0
     )
   `)
@@ -151,4 +152,7 @@ export async function runMigrations(): Promise<void> {
   await executeQuery('CREATE INDEX IF NOT EXISTS idx_review_records_due_date ON review_records(due_date)')
   await executeQuery('CREATE INDEX IF NOT EXISTS idx_session_logs_card_id ON session_logs(card_id)')
   await executeQuery('CREATE INDEX IF NOT EXISTS idx_session_logs_reviewed_at ON session_logs(reviewed_at)')
+
+  // Add level column to existing tables that may not have it
+  await executeQuery("ALTER TABLE lessons ADD COLUMN IF NOT EXISTS level TEXT NOT NULL DEFAULT 'N5'")
 }

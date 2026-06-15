@@ -4,6 +4,7 @@ import { useSession } from '../hooks/useSession';
 import FlashCard from '../components/FlashCard';
 import ProgressBar from '../components/ProgressBar';
 import Icon from '../components/Icon';
+import { getRoleHomePath } from '../utils/role';
 import type { SummaryData } from '../types';
 
 const SWIPE_THRESHOLD = 80; // px needed to register a swipe
@@ -102,7 +103,7 @@ const StudyPage: FC = () => {
         <p style={{ color: 'var(--text-muted)', fontSize: 15, fontWeight: 600, marginBottom: 28 }}>
           You're all caught up!
         </p>
-        <button className="btn btn-green" onClick={() => navigate('/')}>
+        <button className="btn btn-green" onClick={() => navigate(getRoleHomePath())}>
           <Icon name="home" size={16} /> Go home
         </button>
       </div>
@@ -116,7 +117,7 @@ const StudyPage: FC = () => {
 
       {/* ── Top bar ── */}
       <div className="study-header">
-        <button className="close-btn" onClick={() => navigate('/')}>
+        <button className="close-btn" onClick={() => navigate(getRoleHomePath())}>
           <Icon name="x" size={16} />
         </button>
         <ProgressBar current={progress.current} total={progress.total} />

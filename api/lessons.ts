@@ -1,8 +1,9 @@
-import { sql, runMigrations } from '../src/db/neon';
+import { sql, runMigrations, executeQuery } from '../src/db/neon';
 
 interface LessonRow {
   id: number;
   name: string;
+  level: string;
   imported_at: number;
 }
 
@@ -13,10 +14,11 @@ interface LessonStats {
 }
 
 export default async function handler(req: Request): Promise<Response> {
-// Migrations removed from request path for performance
+  await runMigrations();
 
   const url = new URL(req.url);
   const id = url.searchParams.get('id');
+  const level = url.searchParams.get('level');
 
   // ── GET /api/lessons — list all lessons with stats ──
   if (req.method === 'GET') {
@@ -30,11 +32,17 @@ export default async function handler(req: Request): Promise<Response> {
         return Response.json({
           id: lesson[0].id,
           name: lesson[0].name,
+          level: lesson[0].level,
           importedAt: lesson[0].imported_at,
         });
       }
 
-      const rows = await sql`SELECT * FROM lessons ORDER BY imported_at DESC`;
+      let rows: unknown[];
+      if (level) {
+        rows = await sql`SELECT * FROM lessons WHERE level = ${level} ORDER BY imported_at DESC`;
+      } else {
+        rows = await sql`SELECT * FROM lessons ORDER BY imported_at DESC`;
+      }
       const lessons = rows as unknown as LessonRow[];
 
       const now = new Date();
@@ -71,7 +79,7 @@ export default async function handler(req: Request): Promise<Response> {
           }
 
           const stats: LessonStats = { totalCards, dueCards, lastStudied };
-          return { id: lesson.id, name: lesson.name, importedAt: lesson.imported_at, stats };
+          return { id: lesson.id, name: lesson.name, level: lesson.level, importedAt: lesson.imported_at, stats };
         })
       );
 
@@ -86,14 +94,18 @@ export default async function handler(req: Request): Promise<Response> {
   if (req.method === 'POST') {
     try {
       const body = await req.json();
-      const { name, cards: rows } = body as {
+      const { name, level: lessonLevel, cards: rows } = body as {
         name: string;
+        level: string;
         cards: { japanese: string; english: string; reading?: string }[];
       };
 
       if (!name || !rows || rows.length === 0) {
         return Response.json({ error: 'Missing name or cards' }, { status: 400 });
       }
+
+      const validLevels = ['N1', 'N2', 'N3', 'N4', 'N5'];
+      const actualLevel = validLevels.includes(lessonLevel) ? lessonLevel : 'N5';
 
       // Check for duplicate
       const existingRows = await sql`SELECT id FROM lessons WHERE name = ${name}`;
@@ -103,14 +115,24 @@ export default async function handler(req: Request): Promise<Response> {
       }
 
       // Insert lesson (no transaction — Neon HTTP endpoint uses connection-per-request)
-      const result = await sql`INSERT INTO lessons (name, imported_at) VALUES (${name}, ${Date.now()}) RETURNING id, name, imported_at`;
+      const result = await sql`INSERT INTO lessons (name, level, imported_at) VALUES (${name}, ${actualLevel}, ${Date.now()}) RETURNING id, name, level, imported_at`;
       const lesson = result as unknown as LessonRow[];
       const lessonId = lesson[0].id;
 
-      // Bulk insert cards (best-effort: if any fail, delete the lesson as cleanup)
+      // Bulk insert cards in batches to avoid per-row HTTP round-trips
+      const BATCH = 100;
       try {
-        for (const row of rows) {
-          await sql`INSERT INTO cards (lesson_id, japanese, english, reading) VALUES (${lessonId}, ${row.japanese}, ${row.english}, ${row.reading ?? null})`;
+        for (let i = 0; i < rows.length; i += BATCH) {
+          const chunk = rows.slice(i, i + BATCH);
+          const values: string[] = [];
+          const params: unknown[] = [];
+          let idx = 0;
+          for (const row of chunk) {
+            values.push(`($${idx + 1}, $${idx + 2}, $${idx + 3}, $${idx + 4})`);
+            params.push(lessonId, row.japanese, row.english, row.reading ?? null);
+            idx += 4;
+          }
+          await executeQuery(`INSERT INTO cards (lesson_id, japanese, english, reading) VALUES ${values.join(', ')}`, params);
         }
       } catch (cardErr) {
         // Cleanup: delete the lesson if card inserts fail
@@ -121,6 +143,7 @@ export default async function handler(req: Request): Promise<Response> {
       return Response.json({
         id: lesson[0].id,
         name: lesson[0].name,
+        level: lesson[0].level,
         importedAt: lesson[0].imported_at,
         stats: {
           totalCards: rows.length,

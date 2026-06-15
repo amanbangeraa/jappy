@@ -68,16 +68,23 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
             color: 'var(--heading)',
             lineHeight: 1.3,
             textAlign: 'center',
+            wordBreak: 'keep-all',
+            overflowWrap: 'anywhere',
+            maxWidth: '100%',
+            padding: '0 4px',
           }}>
-            {truncate(english, 30)}
+            {truncate(english, 24)}
           </span>
           {reading && (
-            <span className="font-jp" style={{ fontSize: 16, color: 'var(--text-muted)', fontWeight: 600 }}>
+            <span className="font-jp" style={{
+              fontSize: 18,
+              color: 'var(--text-muted)',
+              fontWeight: 600,
+            }}>
               {reading}
             </span>
           )}
         </div>
-
       </div>
     </div>
   );

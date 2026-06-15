@@ -622,3 +622,250 @@ input  { font-family: inherit; }
   text-align: center;
   padding: 48px 0;
 }
+
+/* ─── Landing Page ──────────────────────────────────────────── */
+.landing-page {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #F0F9FF 0%, #FFFFFF 40%, #F7FFF0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .landing-page {
+    background: linear-gradient(160deg, #0F1A20 0%, #131F24 40%, #0F1E14 100%);
+  }
+}
+
+.landing-content {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+}
+
+.landing-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.landing-logo-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--green), #7CE62B);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 0 var(--green-dark), 0 12px 30px rgba(88, 204, 2, 0.35);
+  animation: float 3.5s ease-in-out infinite;
+}
+
+.landing-title {
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--heading);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.landing-subtitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.landing-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.landing-role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 28px 24px 24px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  text-align: center;
+  width: 100%;
+  font-family: var(--font-base);
+}
+
+.landing-role-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.landing-role-card:active {
+  transform: scale(0.98);
+}
+
+.landing-role-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.landing-role-card:hover .landing-role-icon {
+  transform: scale(1.08);
+}
+
+.landing-role-student { background: #EDFFD7; }
+.landing-role-admin   { background: #DBF0FF; }
+
+.landing-role-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--heading);
+}
+
+.landing-role-desc {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.landing-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 800;
+  margin-top: 6px;
+  transition: filter 0.15s ease;
+}
+
+.landing-role-card:hover .landing-role-badge {
+  filter: brightness(0.95);
+}
+
+/* ─── Level Header ──────────────────────────────────────────── */
+.level-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-left: 4px solid;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface);
+  margin-bottom: 4px;
+}
+
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+/* ─── Upload Zone ───────────────────────────────────────────── */
+.upload-zone {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+
+.upload-zone-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+}
+
+.upload-zone-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ─── Level Select ──────────────────────────────────────────── */
+.level-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.level-select-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.level-select-row {
+  display: flex;
+  gap: 8px;
+}
+
+.level-select-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  font-family: var(--font-base);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.level-select-btn:hover {
+  border-color: var(--level-color, var(--green));
+  color: var(--level-color, var(--green));
+  background: color-mix(in srgb, var(--level-color, var(--green)) 8%, var(--card));
+}
+
+.level-select-btn-active {
+  border-color: var(--level-color, var(--green));
+  background: color-mix(in srgb, var(--level-color, var(--green)) 15%, var(--card));
+  color: var(--level-color, var(--green));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--level-color, var(--green)) 20%, transparent);
+}
+
+/* ─── Dark mode adjustments for new components ──────────────── */
+@media (prefers-color-scheme: dark) {
+  .landing-role-student { background: rgba(88, 204, 2, 0.15); }
+  .landing-role-admin   { background: rgba(28, 176, 246, 0.15); }
+  
+  .level-select-btn:hover {
+    background: color-mix(in srgb, var(--level-color, var(--green)) 12%, var(--card));
+  }
+  
+  .level-select-btn-active {
+    background: color-mix(in srgb, var(--level-color, var(--green)) 20%, var(--card));
+  }
+}

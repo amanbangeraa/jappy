@@ -1,6 +1,9 @@
+export type JLPTLevel = 'N1' | 'N2' | 'N3' | 'N4' | 'N5';
+
 export interface Lesson {
   id?: number;
   name: string;
+  level: JLPTLevel;
   importedAt: number;
 }
 
@@ -60,3 +63,21 @@ export interface SummaryData {
   accuracy: number;
   results: SessionResult[];
 }
+
+export const LEVEL_ORDER: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
+export const LEVEL_COLORS: Record<JLPTLevel, string> = {
+  N5: '#58CC02',
+  N4: '#1CB0F6',
+  N3: '#FF9600',
+  N2: '#CE82FF',
+  N1: '#FF4B4B',
+};
+
+export const LEVEL_LABELS: Record<JLPTLevel, string> = {
+  N5: 'N5 — Beginner',
+  N4: 'N4 — Basic',
+  N3: 'N3 — Intermediate',
+  N2: 'N2 — Pre-Advanced',
+  N1: 'N1 — Advanced',
+};
