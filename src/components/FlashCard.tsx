@@ -9,9 +9,6 @@ interface FlashCardProps {
 }
 
 const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, onFlip }) => {
-  const truncate = (text: string, maxLen: number) =>
-    text.length > maxLen ? text.slice(0, maxLen) + '…' : text;
-
   // Dynamically scale Japanese font size based on text length so longer
   // words / phrases always fit comfortably inside the card.
   const jpFontSize = (() => {
@@ -40,7 +37,7 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
             maxWidth: '100%',
             padding: '0 4px',
           }}>
-            {truncate(japanese, 12)}
+            {japanese}
           </span>
           {reading ? (
             <span style={{ fontSize: 16, color: 'var(--text-muted)', fontWeight: 600 }}>
@@ -73,7 +70,7 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
             maxWidth: '100%',
             padding: '0 4px',
           }}>
-            {truncate(english, 24)}
+            {english}
           </span>
           {reading && (
             <span className="font-jp" style={{

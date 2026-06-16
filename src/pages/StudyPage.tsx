@@ -127,6 +127,7 @@ const StudyPage: FC = () => {
       {/* ── Card with swipe ── */}
       <div className="study-card-area">
         <div
+          key={currentCard?.id ?? 0}
           ref={cardRef}
           style={{
             transform: `translateX(${clampedDrag}px) rotate(${rotateDeg}deg)`,
