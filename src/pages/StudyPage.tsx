@@ -37,6 +37,7 @@ const StudyPage: FC = () => {
   }, [finished, summary, navigate]);
 
   const handleGrade = useCallback((key: 'miss' | 'got') => {
+    setFlipped(false);
     setDragX(0);
     setIsDragging(false);
     gradeCard(key);

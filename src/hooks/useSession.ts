@@ -86,7 +86,7 @@ export function useSession(lessonId: number | 'all') {
     });
   }, []);
 
-  const gradeCard = useCallback(async (gradeKey: string) => {
+  const gradeCard = useCallback((gradeKey: string) => {
     const queue = queueRef.current;
     const index = indexRef.current;
     if (index >= queue.length) return;
@@ -114,25 +114,22 @@ export function useSession(lessonId: number | 'all') {
 
     const updated = updateReview(existing, grade);
 
-    // Persist to API — await so we don't advance before DB confirms
-    try {
-      await submitGrade({
-        cardId: card.id!,
-        grade,
-        interval: updated.interval,
-        easeFactor: updated.easeFactor,
-        repetitions: updated.repetitions,
-        dueDate: updated.dueDate,
-      });
-    } catch (err) {
+    // Fire-and-forget API call — don't block UI advancement
+    submitGrade({
+      cardId: card.id!,
+      grade,
+      interval: updated.interval,
+      easeFactor: updated.easeFactor,
+      repetitions: updated.repetitions,
+      dueDate: updated.dueDate,
+    }).catch((err) => {
       // Revert optimistic result on failure
       resultsRef.current = resultsRef.current.filter(
         (r) => !(r.cardId === card.id! && r.grade === grade)
       );
       setError(err instanceof Error ? err.message : 'Failed to save grade');
       rerender();
-      return; // Don't advance — let the user retry
-    }
+    });
 
     // Re-queue if missed and not already re-queued this session.
     // Use the UPDATED SM2 values so the re-queued card has correct
@@ -148,7 +145,7 @@ export function useSession(lessonId: number | 'all') {
       }];
     }
 
-    // Advance to the next card
+    // Advance to the next card immediately
     const nextIndex = index + 1;
     if (nextIndex >= queueRef.current.length) {
       indexRef.current = nextIndex;
