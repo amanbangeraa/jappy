@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { sql, runMigrations } from '../src/db/neon.js';
 import bcrypt from 'bcryptjs';
 
@@ -5,6 +6,20 @@ import bcrypt from 'bcryptjs';
 
 const SESSION_COOKIE = 'jappy_session';
 const SESSION_MAX_AGE = 30 * 24 * 60 * 60;
+const TOKEN_VERSION = 'v2';
+
+interface TokenUser {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: number;
+}
+
+interface TokenPayload {
+  user: TokenUser;
+  exp: number;
+}
 
 function sendResponse(data: unknown, status = 200, headers?: HeadersInit): Response {
   return new Response(JSON.stringify(data), {
@@ -39,9 +54,54 @@ function getToken(req: Request): string | null {
   return getCookieToken(req);
 }
 
+function tokenSecret(): string {
+  return process.env.SESSION_SECRET || process.env.DATABASE_URL || 'jappy-dev-session-secret';
+}
+
+function sign(value: string): string {
+  return createHmac('sha256', tokenSecret()).update(value).digest('base64url');
+}
+
+function safeEqual(left: string, right: string): boolean {
+  const leftBuffer = Buffer.from(left);
+  const rightBuffer = Buffer.from(right);
+  return leftBuffer.length === rightBuffer.length && timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function createSignedToken(user: TokenUser, now = Date.now()): string {
+  const payload = Buffer.from(JSON.stringify({ user, exp: now + SESSION_MAX_AGE * 1000 } satisfies TokenPayload)).toString('base64url');
+  return `${TOKEN_VERSION}.${payload}.${sign(payload)}`;
+}
+
+function readSignedToken(token: string): TokenPayload | null {
+  const [version, payload, signature] = token.split('.');
+  if (version !== TOKEN_VERSION || !payload || !signature || !safeEqual(signature, sign(payload))) return null;
+
+  try {
+    const parsed = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as TokenPayload;
+    if (!parsed.user?.id || parsed.exp < Date.now()) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function publicUser(user: { id: number; username: string; email: string; role: string; created_at: number }): TokenUser {
+  return {
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    createdAt: Number(user.created_at),
+  };
+}
+
 export async function verifyToken(req: Request): Promise<{ userId: number; role: string } | null> {
   const token = getToken(req);
   if (!token) return null;
+
+  const signed = readSignedToken(token);
+  if (signed) return { userId: signed.user.id, role: signed.user.role };
 
   const rows = await sql`
     SELECT s.user_id, u.role
@@ -93,23 +153,11 @@ export default async function handler(req: Request): Promise<Response> {
         return sendResponse({ error: 'Invalid email or password' }, 401);
       }
 
-      const now = Date.now();
-      const token = crypto.randomUUID();
-      const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
-
-      await sql`
-        INSERT INTO sessions (user_id, token, created_at, expires_at)
-        VALUES (${user.id}, ${token}, ${now}, ${expiresAt})
-      `;
+      const responseUser = publicUser(user);
+      const token = createSignedToken(responseUser);
 
       return sendResponse({
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          createdAt: Number(user.created_at),
-        },
+        user: responseUser,
         token,
       }, 200, { 'Set-Cookie': sessionCookie(token) });
     } catch (err) {
@@ -153,8 +201,6 @@ export default async function handler(req: Request): Promise<Response> {
 
       const passwordHash = await bcrypt.hash(password, 10);
       const now = Date.now();
-      const token = crypto.randomUUID();
-      const expiresAt = now + 30 * 24 * 60 * 60 * 1000; // 30 days
 
       const userRows = await sql`
         INSERT INTO users (username, email, password_hash, role, created_at)
@@ -162,20 +208,11 @@ export default async function handler(req: Request): Promise<Response> {
         RETURNING id, username, email, role, created_at
       `;
       const user = userRows[0] as { id: number; username: string; email: string; role: string; created_at: number };
-
-      await sql`
-        INSERT INTO sessions (user_id, token, created_at, expires_at)
-        VALUES (${user.id}, ${token}, ${now}, ${expiresAt})
-      `;
+      const responseUser = publicUser(user);
+      const token = createSignedToken(responseUser, now);
 
       return sendResponse({
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          createdAt: Number(user.created_at),
-        },
+        user: responseUser,
         token,
       }, 201, { 'Set-Cookie': sessionCookie(token) });
     } catch (err) {
@@ -211,23 +248,11 @@ export default async function handler(req: Request): Promise<Response> {
         return sendResponse({ error: 'Invalid email or password' }, 401);
       }
 
-      const now = Date.now();
-      const token = crypto.randomUUID();
-      const expiresAt = now + 30 * 24 * 60 * 60 * 1000; // 30 days
-
-      await sql`
-        INSERT INTO sessions (user_id, token, created_at, expires_at)
-        VALUES (${user.id}, ${token}, ${now}, ${expiresAt})
-      `;
+      const responseUser = publicUser(user);
+      const token = createSignedToken(responseUser);
 
       return sendResponse({
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          createdAt: Number(user.created_at),
-        },
+        user: responseUser,
         token,
       }, 200, { 'Set-Cookie': sessionCookie(token) });
     } catch (err) {
@@ -238,16 +263,7 @@ export default async function handler(req: Request): Promise<Response> {
 
   // ── POST /api/auth?path=logout ──
   if (req.method === 'POST' && path === 'logout') {
-    try {
-      const token = getToken(req);
-      if (token) {
-        await sql`DELETE FROM sessions WHERE token = ${token}`;
-      }
-      return sendResponse({ success: true }, 200, { 'Set-Cookie': clearSessionCookie() });
-    } catch (err) {
-      console.error('Logout error:', err);
-      return sendResponse({ success: true }, 200, { 'Set-Cookie': clearSessionCookie() }); // always succeed on client side
-    }
+    return sendResponse({ success: true }, 200, { 'Set-Cookie': clearSessionCookie() });
   }
 
   // ── GET /api/auth?path=me ──
@@ -256,6 +272,11 @@ export default async function handler(req: Request): Promise<Response> {
       const token = getToken(req);
       if (!token) {
         return sendResponse({ error: 'Not authenticated' }, 401);
+      }
+
+      const signed = readSignedToken(token);
+      if (signed) {
+        return sendResponse({ user: signed.user });
       }
 
       const rows = await sql`
@@ -270,15 +291,7 @@ export default async function handler(req: Request): Promise<Response> {
       }
 
       const user = rows[0] as { id: number; username: string; email: string; role: string; created_at: number };
-      return sendResponse({
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          createdAt: Number(user.created_at),
-        },
-      });
+      return sendResponse({ user: publicUser(user) });
     } catch (err) {
       console.error('Me error:', err);
       return sendResponse({ error: 'Failed to get user' }, 500);
