@@ -14,7 +14,6 @@ export function useSession(lessonId: number | 'all') {
   const [finished, setFinished] = useState(false);
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
 
   const shuffle = <T,>(arr: T[]): T[] => {
     const a = [...arr];
@@ -34,7 +33,6 @@ export function useSession(lessonId: number | 'all') {
     requeuedRef.current = new Set();
     setSummary(null);
     setError(null);
-    setSubmitting(false);
 
     try {
       if (lessonId === 'all') {
@@ -84,9 +82,9 @@ export function useSession(lessonId: number | 'all') {
     });
   }, []);
 
-  const gradeCard = useCallback(async (gradeKey: string): Promise<boolean> => {
+  const gradeCard = useCallback(async (gradeKey: string) => {
     const card = queue[index];
-    if (!card || submitting) return false;
+    if (!card) return;
 
     const grade: Grade = QUALITY_MAP[gradeKey] ?? 0;
 
@@ -101,7 +99,6 @@ export function useSession(lessonId: number | 'all') {
 
     const updated = updateReview(existing, grade);
 
-    setSubmitting(true);
     setError(null);
 
     try {
@@ -143,14 +140,10 @@ export function useSession(lessonId: number | 'all') {
         setFinished(true);
         buildSummary();
       }
-      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save grade');
-      return false;
-    } finally {
-      setSubmitting(false);
     }
-  }, [buildSummary, index, queue, submitting]);
+  }, [buildSummary, index, queue]);
 
   const currentCard = queue[index] ?? null;
 
@@ -167,7 +160,6 @@ export function useSession(lessonId: number | 'all') {
     summary,
     progress,
     error,
-    submitting,
     startSession,
     gradeCard,
   };
