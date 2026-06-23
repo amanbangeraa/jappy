@@ -1,6 +1,7 @@
 import type { Lesson, Card, ReviewRecord, LessonStats, JLPTLevel, AuthResponse, RegisterData } from '../types';
 
 const API_BASE = '/api';
+const API_TIMEOUT_MS = 20_000;
 
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem('jappy_token');
@@ -8,16 +9,29 @@ function getAuthHeaders(): Record<string, string> {
 }
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-    ...options,
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error((body as { error?: string }).error ?? `Request failed: ${res.status}`);
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeaders(), ...options?.headers },
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error((body as { error?: string }).error ?? `Request failed: ${res.status}`);
+    }
+    return res.json();
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error('Request timed out. Please try again.');
+    }
+    throw err;
+  } finally {
+    window.clearTimeout(timeoutId);
   }
-  return res.json();
 }
 
 // ── Auth ──
