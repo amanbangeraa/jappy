@@ -96,6 +96,8 @@ const AdminLoginPage: FC = () => {
             ← Back to student login
           </a>
         </p>
+
+        <p className="login-footer-credit">Made for Hoomans by Aman Bangera</p>
       </div>
     </div>
   );

@@ -193,6 +193,8 @@ const LoginPage: FC = () => {
             </button>
           </form>
         )}
+
+        <p className="login-footer-credit">Made for Hoomans by Aman Bangera</p>
       </div>
     </div>
   );
