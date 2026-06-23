@@ -17,7 +17,7 @@ function parseDotEnv(path: string): Record<string, string> {
       if (!trimmed || trimmed.startsWith('#')) continue
       const eqIdx = trimmed.indexOf('=')
       if (eqIdx === -1) continue
-      let key = trimmed.slice(0, eqIdx).trim()
+      const key = trimmed.slice(0, eqIdx).trim()
       let value = trimmed.slice(eqIdx + 1).trim()
       // Remove surrounding quotes
       if ((value.startsWith("'") && value.endsWith("'")) ||
@@ -69,6 +69,7 @@ function loadEnvIntoProcess(mode: string, root: string) {
 function apiDevPlugin() {
   // Map URL paths to handler module paths (relative to project root)
   const routeMap: Record<string, string> = {
+    '/api/auth': 'api/auth.ts',
     '/api/lessons': 'api/lessons.ts',
     '/api/cards': 'api/cards.ts',
     '/api/review': 'api/review.ts',

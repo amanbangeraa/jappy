@@ -1,73 +1,116 @@
-# React + TypeScript + Vite
+# Jappy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Jappy is a Japanese vocabulary study app built with React, TypeScript, Vite, and Vercel serverless APIs. It supports student study sessions, admin-managed lesson/card data, spaced repetition review scheduling, and Neon Postgres persistence.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Student authentication with a dedicated student login and registration flow.
+- Separate admin login at `/admin-jappy` with protected admin routes.
+- Role-based route protection for student and admin dashboards.
+- JLPT lesson organization from N5 through N1.
+- Flashcard study sessions with SM-2-style spaced repetition.
+- Review summaries, XP feedback, and session history.
+- Vercel API routes backed by Neon Postgres.
+- Light/dark theme support.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite
+- React Router
+- Tailwind CSS
+- Neon Postgres
+- Vercel serverless/edge functions
+- bcryptjs
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+api/                 Vercel API handlers
+src/api/             Frontend API client
+src/algorithms/      Spaced repetition logic
+src/components/      Shared UI components
+src/contexts/        Auth and theme providers
+src/db/              Database client and schema migrations
+src/hooks/           Data and session hooks
+src/pages/           Route pages
+src/types/           Shared TypeScript types
+src/utils/           Utility helpers
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Environment Variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create local environment files from `.env.example` and configure the same variables in Vercel production.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
+ADMIN_SECRET=your-admin-secret-here
 ```
+
+- `DATABASE_URL` is required for API routes and Neon Postgres migrations.
+- `ADMIN_SECRET` is required for protected admin registration flows when enabled by the API.
+
+## Local Development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Run lint checks:
+
+```bash
+npm run lint
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Routes
+
+- `/` redirects authenticated users by role and unauthenticated users to login.
+- `/login` handles student login and registration.
+- `/admin-jappy` handles admin login.
+- `/student` shows the student dashboard.
+- `/admin` shows the admin dashboard.
+- `/lessons/:id` shows lesson details.
+- `/study` runs a study session.
+- `/summary` shows session results.
+
+## API
+
+The Vercel API routes live in `api/` and are served under `/api/*`.
+
+- `/api/auth/*` handles login, registration, sessions, and logout.
+- `/api/lessons` handles lesson data.
+- `/api/cards` handles card data.
+- `/api/review` handles review records and session progress.
+
+## Deployment
+
+The app is configured for Vercel. Production deployment expects the Vercel project to have the required environment variables set.
+
+```bash
+npm run lint
+npm run build
+vercel --prod
+```
+
+`vercel.json` rewrites non-API routes to `index.html` so React Router can handle client-side navigation.

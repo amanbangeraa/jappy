@@ -19,7 +19,7 @@ export function useLessons(level?: JLPTLevel) {
   }, [level]);
 
   useEffect(() => {
-    loadLessons();
+    void Promise.resolve().then(loadLessons);
   }, [loadLessons]);
 
   const importCSV = useCallback(async (name: string, lessonLevel: JLPTLevel, cards: { japanese: string; english: string; reading?: string }[]) => {

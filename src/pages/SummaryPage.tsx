@@ -1,14 +1,16 @@
 import { type FC, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/auth';
 import XPBadge from '../components/XPBadge';
 import Icon from '../components/Icon';
-import { getRoleHomePath } from '../utils/role';
 import type { SummaryData } from '../types';
 
 const SummaryPage: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const summary: SummaryData | null = (location.state as { summary?: SummaryData })?.summary ?? null;
+  const homePath = user?.role === 'admin' ? '/admin' : '/student';
 
   const [barsVisible, setBarsVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -22,7 +24,7 @@ const SummaryPage: FC = () => {
     return (
       <div className="page-center" style={{ gap: 0 }}>
         <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontWeight: 600 }}>No session data found.</p>
-        <button className="btn btn-green" onClick={() => navigate(getRoleHomePath())}><Icon name="home" size={16} /> Go home</button>
+        <button className="btn btn-green" onClick={() => navigate(homePath)}><Icon name="home" size={16} /> Go home</button>
       </div>
     );
   }
@@ -66,7 +68,7 @@ const SummaryPage: FC = () => {
       </div>
 
       {/* ── Two stat cards ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
+      <div className="summary-stat-grid">
         {bars.map((bar, i) => (
           <div key={bar.label} className="anim-fadeInUp" style={{ animationDelay: `${200 + i * 100}ms` }}>
             <div style={{
@@ -138,17 +140,14 @@ const SummaryPage: FC = () => {
 
       {/* ── Card results ── */}
       {showDetails && (
-        <div style={{ marginBottom: 28 }} className="anim-fadeIn">
+        <div className="summary-details anim-fadeIn">
           {results.map((r, i) => {
             const isGot = r.grade >= 2;
             return (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                background: 'var(--card)', border: '2px solid var(--border)',
-                borderRadius: 'var(--radius-md)', padding: '12px 16px', marginBottom: 8,
+              <div key={i} className="summary-result-row" style={{
                 animation: `fadeInUp 0.3s ease-out ${i * 30}ms both`,
               }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                <div className="summary-result-text">
                   <span style={{ fontFamily: 'var(--font-jp)', fontSize: 18, fontWeight: 700, color: 'var(--heading)' }}>
                     {r.japanese}
                   </span>
@@ -171,11 +170,11 @@ const SummaryPage: FC = () => {
       )}
 
       {/* ── Actions ── */}
-      <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-        <button className="btn btn-ghost" onClick={() => navigate(getRoleHomePath())}>
+      <div className="summary-actions">
+        <button className="btn btn-ghost" onClick={() => navigate(homePath)}>
           <Icon name="home" size={16} /> Home
         </button>
-        <button className="btn btn-green" onClick={() => navigate(getRoleHomePath())}>
+        <button className="btn btn-green" onClick={() => navigate(homePath)}>
           <Icon name="lightning" size={16} /> Study again
         </button>
       </div>

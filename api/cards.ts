@@ -1,4 +1,5 @@
 import { sql, runMigrations } from '../src/db/neon';
+import { verifyToken } from './auth';
 
 export const config = { runtime: 'edge' };
 
@@ -13,45 +14,52 @@ interface CardRow {
 interface ReviewRow {
   id: number;
   card_id: number;
+  user_id: number | null;
   interval: number;
   ease_factor: number;
   repetitions: number;
   due_date: number;
 }
 
-export default async function handler(req: any, res?: any): Promise<any> {
-  const sendResponse = (data: any, status = 200) => {
-    if (res && typeof res.status === 'function') {
-      return res.status(status).json(data);
-    }
+export default async function handler(req: Request): Promise<Response> {
+  const sendResponse = (data: unknown, status = 200) => {
     return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
   };
 
-  let lessonId: string | null = null;
+  let lessonId: string | null;
 
   try {
     await runMigrations();
-    lessonId = req.query?.lessonId ?? new URL(req.url || '', 'http://localhost').searchParams.get('lessonId');
+    lessonId = new URL(req.url || '', 'http://localhost').searchParams.get('lessonId');
   } catch (err) {
     console.error('Initialization error:', err);
     return sendResponse({ error: err instanceof Error ? err.message : String(err) }, 500);
   }
 
-  // ── GET /api/cards?lessonId=X — get cards for a lesson with review data ──
+  // ── GET /api/cards?lessonId=X — get cards for a lesson with review data (user-scoped) ──
   if (req.method === 'GET') {
     try {
+      const auth = await verifyToken(req);
+      if (!auth) {
+        return sendResponse({ error: 'Not authenticated' }, 401);
+      }
+
       if (!lessonId) {
         return sendResponse({ error: 'lessonId query param required' }, 400);
       }
 
       const lid = Number(lessonId);
+      if (!Number.isInteger(lid) || lid <= 0) {
+        return sendResponse({ error: 'lessonId must be a positive integer' }, 400);
+      }
+
       const cardRows = await sql`SELECT * FROM cards WHERE lesson_id = ${lid}`;
       const cards = cardRows as unknown as CardRow[];
 
       const cardIds = cards.map((c) => c.id);
       let reviews: ReviewRow[] = [];
       if (cardIds.length > 0) {
-        const reviewRows = await sql`SELECT * FROM review_records WHERE card_id = ANY(${cardIds})`;
+        const reviewRows = await sql`SELECT * FROM review_records WHERE card_id = ANY(${cardIds}) AND user_id = ${auth.userId}`;
         reviews = reviewRows as unknown as ReviewRow[];
       }
       const reviewMap = new Map(reviews.map((r) => [r.card_id, r]));

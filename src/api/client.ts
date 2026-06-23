@@ -1,10 +1,16 @@
-import type { Lesson, Card, ReviewRecord, LessonStats, JLPTLevel } from '../types';
+import type { Lesson, Card, ReviewRecord, LessonStats, JLPTLevel, AuthResponse, RegisterData } from '../types';
 
 const API_BASE = '/api';
 
+function getAuthHeaders(): Record<string, string> {
+  const token = localStorage.getItem('jappy_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
     ...options,
   });
   if (!res.ok) {
@@ -12,6 +18,37 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     throw new Error((body as { error?: string }).error ?? `Request failed: ${res.status}`);
   }
   return res.json();
+}
+
+// ── Auth ──
+
+export async function login(email: string, password: string): Promise<AuthResponse> {
+  return request<AuthResponse>('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function register(data: RegisterData): Promise<AuthResponse> {
+  return request<AuthResponse>('/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function adminLogin(email: string, password: string): Promise<AuthResponse> {
+  return request<AuthResponse>('/auth/admin-login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function logout(): Promise<void> {
+  await request('/auth/logout', { method: 'POST' });
+}
+
+export async function getMe(): Promise<{ user: AuthResponse['user'] }> {
+  return request<{ user: AuthResponse['user'] }>('/auth/me');
 }
 
 // ── Lessons ──

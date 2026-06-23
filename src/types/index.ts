@@ -1,4 +1,5 @@
 export type JLPTLevel = 'N1' | 'N2' | 'N3' | 'N4' | 'N5';
+export type UserRole = 'student' | 'admin';
 
 export interface Lesson {
   id?: number;
@@ -18,6 +19,7 @@ export interface Card {
 export interface ReviewRecord {
   id?: number;
   cardId: number;
+  userId?: number;
   interval: number;
   easeFactor: number;
   repetitions: number;
@@ -27,6 +29,7 @@ export interface ReviewRecord {
 export interface SessionLog {
   id?: number;
   cardId: number;
+  userId: number;
   grade: Grade;
   reviewedAt: number;
 }
@@ -62,6 +65,38 @@ export interface SummaryData {
   xpEarned: number;
   accuracy: number;
   results: SessionResult[];
+}
+
+// ── Auth ──
+
+export interface User {
+  id?: number;
+  username: string;
+  email: string;
+  passwordHash?: string;
+  role: UserRole;
+  createdAt?: number;
+}
+
+export interface Session {
+  id?: number;
+  userId: number;
+  token: string;
+  createdAt: number;
+  expiresAt: number;
+}
+
+export interface AuthResponse {
+  user: Omit<User, 'passwordHash'>;
+  token: string;
+}
+
+export interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  adminSecret?: string;
 }
 
 export const LEVEL_ORDER: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];

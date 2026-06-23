@@ -2,16 +2,18 @@ import { type FC } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
 import { useCards } from '../hooks/useCards';
+import { useAuth } from '../contexts/auth';
 import { LEVEL_COLORS, type JLPTLevel } from '../types';
-import { getRoleHomePath } from '../utils/role';
 import Icon from '../components/Icon';
 
 const LessonPage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const lessonId = Number(id);
   const { lessons, removeLesson } = useLessons();
   const { cards, loading } = useCards(lessonId);
+  const homePath = user?.role === 'admin' ? '/admin' : '/student';
 
   const lesson = lessons.find((l) => l.id === lessonId);
 
@@ -19,7 +21,7 @@ const LessonPage: FC = () => {
     return (
       <div className="page-center">
         <p style={{ color: 'var(--text-muted)', marginBottom: 20 }}>Lesson not found.</p>
-        <button className="btn btn-ghost" onClick={() => navigate(getRoleHomePath())}>
+        <button className="btn btn-ghost" onClick={() => navigate(homePath)}>
           <Icon name="chevron-left" size={16} /> Go home
         </button>
       </div>
@@ -37,7 +39,7 @@ const LessonPage: FC = () => {
     const confirmed = window.confirm(`Delete "${lesson.name}" and all its cards? This cannot be undone.`);
     if (!confirmed) return;
     await removeLesson(lesson.id);
-    navigate(getRoleHomePath());
+    navigate(homePath);
   };
 
   return (
@@ -50,9 +52,9 @@ const LessonPage: FC = () => {
 
       {/* ── Header ── */}
       <div style={{ marginBottom: 28 }} className="anim-fadeInUp">
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+        <div className="lesson-header-row">
+          <div className="lesson-header-main">
+            <div className="lesson-title-row">
               <h1 className="heading-lg" style={{ marginBottom: 0 }}>
                 {lesson?.name ?? 'Loading…'}
               </h1>
@@ -69,7 +71,7 @@ const LessonPage: FC = () => {
               )}
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+          <div className="lesson-header-actions">
             {lesson && hasDue && (
               <button
                 className="btn btn-green btn-sm"
@@ -129,7 +131,7 @@ const LessonPage: FC = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {cards.map((card, i) => (
             <div key={card.id} className="word-row anim-fadeInUp" style={{ animationDelay: `${i * 40}ms` }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+              <div className="word-main">
                 <span className="word-ja">{card.japanese}</span>
                 {card.reading && <span className="word-reading">{card.reading}</span>}
               </div>

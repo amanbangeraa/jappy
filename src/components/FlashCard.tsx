@@ -26,17 +26,7 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
         {/* FRONT — Japanese */}
         <div className="flip-face">
           <span className="tap-hint">Tap to reveal</span>
-          <span className="font-jp" style={{
-            fontSize: jpFontSize,
-            fontWeight: 700,
-            color: 'var(--heading)',
-            lineHeight: 1.3,
-            textAlign: 'center',
-            wordBreak: 'keep-all',
-            overflowWrap: 'anywhere',
-            maxWidth: '100%',
-            padding: '0 4px',
-          }}>
+          <span className="font-jp flash-card-text" style={{ fontSize: jpFontSize }}>
             {japanese}
           </span>
           {reading ? (
@@ -59,17 +49,7 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
           }}>
             Meaning
           </span>
-          <span style={{
-            fontSize: 'clamp(24px, 6vw, 36px)',
-            fontWeight: 800,
-            color: 'var(--heading)',
-            lineHeight: 1.3,
-            textAlign: 'center',
-            wordBreak: 'keep-all',
-            overflowWrap: 'anywhere',
-            maxWidth: '100%',
-            padding: '0 4px',
-          }}>
+          <span className="flash-card-meaning">
             {english}
           </span>
           {reading && (

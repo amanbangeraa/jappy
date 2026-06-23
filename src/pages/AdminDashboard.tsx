@@ -1,14 +1,17 @@
 import { type FC, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
+import { useAuth } from '../contexts/auth';
 import { parseCSV } from '../utils/csvParser';
 import { LEVEL_ORDER, LEVEL_COLORS, LEVEL_LABELS, type JLPTLevel } from '../types';
 import type { LessonWithStats } from '../api/client';
 import LessonCard from '../components/LessonCard';
 import Icon from '../components/Icon';
+import BrandLogo from '../components/BrandLogo';
 
 const AdminDashboard: FC = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const { lessons, loading, importCSV, removeLesson } = useLessons();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importing, setImporting] = useState(false);
@@ -71,18 +74,13 @@ const AdminDashboard: FC = () => {
       {/* ── Nav Bar ── */}
       <div className="nav-bar">
         <div>
-          <div className="app-logo" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{
-              width: 34, height: 34, borderRadius: 10,
-              background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Icon name="book-open" size={18} strokeWidth={2} color="#fff" />
-            </div>
-            Jappy
-          </div>
+          <BrandLogo />
           <div className="app-tagline">Admin · Manage lessons</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="nav-actions">
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-muted)' }}>
+            {user?.username}
+          </span>
           {totalDue > 0 && (
             <button className="btn btn-green btn-sm" onClick={() => navigate('/study?lesson=all')}>
               <Icon name="play" size={14} color="#fff" />
@@ -95,8 +93,8 @@ const AdminDashboard: FC = () => {
               </span>
             </button>
           )}
-          <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>
-            <Icon name="home" size={14} /> Switch role
+          <button className="btn btn-ghost btn-sm" onClick={() => logout()}>
+            <Icon name="log-out" size={14} /> Logout
           </button>
         </div>
       </div>

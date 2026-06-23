@@ -1,10 +1,10 @@
 import { type FC, useEffect, useState, useRef, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useSession } from '../hooks/useSession';
+import { useAuth } from '../contexts/auth';
 import FlashCard from '../components/FlashCard';
 import ProgressBar from '../components/ProgressBar';
 import Icon from '../components/Icon';
-import { getRoleHomePath } from '../utils/role';
 import type { SummaryData } from '../types';
 
 const SWIPE_THRESHOLD = 80; // px needed to register a swipe
@@ -12,8 +12,10 @@ const SWIPE_THRESHOLD = 80; // px needed to register a swipe
 const StudyPage: FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const lessonParam = searchParams.get('lesson') ?? 'all';
   const lessonId = lessonParam === 'all' ? 'all' : Number(lessonParam);
+  const homePath = user?.role === 'admin' ? '/admin' : '/student';
 
   const { currentCard, loading, finished, summary, progress, startSession, gradeCard } =
     useSession(lessonId);
@@ -27,8 +29,9 @@ const StudyPage: FC = () => {
   const startXRef = useRef(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { startSession(); }, [startSession]);
-  useEffect(() => { setFlipped(false); setDragX(0); }, [currentCard?.id]);
+  useEffect(() => {
+    void Promise.resolve().then(startSession);
+  }, [startSession]);
   useEffect(() => {
     if (finished && summary && !hasNavigated.current) {
       hasNavigated.current = true;
@@ -104,7 +107,7 @@ const StudyPage: FC = () => {
         <p style={{ color: 'var(--text-muted)', fontSize: 15, fontWeight: 600, marginBottom: 28 }}>
           You're all caught up!
         </p>
-        <button className="btn btn-green" onClick={() => navigate(getRoleHomePath())}>
+        <button className="btn btn-green" onClick={() => navigate(homePath)}>
           <Icon name="home" size={16} /> Go home
         </button>
       </div>
@@ -118,7 +121,7 @@ const StudyPage: FC = () => {
 
       {/* ── Top bar ── */}
       <div className="study-header">
-        <button className="close-btn" onClick={() => navigate(getRoleHomePath())}>
+        <button className="close-btn" onClick={() => navigate(homePath)}>
           <Icon name="x" size={16} />
         </button>
         <ProgressBar current={progress.current} total={progress.total} />
@@ -135,6 +138,7 @@ const StudyPage: FC = () => {
             cursor: flipped ? (isDragging ? 'grabbing' : 'grab') : 'pointer',
             userSelect: 'none',
             position: 'relative',
+            width: '100%',
           }}
           onMouseDown={onMouseDown}
           onMouseMove={onMouseMove}
@@ -230,7 +234,7 @@ const StudyPage: FC = () => {
           </div>
 
           {/* Two big buttons */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="study-grade-actions">
             {/* Miss — left */}
             <button
               className="btn btn-red"

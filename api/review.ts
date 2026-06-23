@@ -1,4 +1,5 @@
 import { sql, runMigrations } from '../src/db/neon';
+import { verifyToken } from './auth';
 
 export const config = { runtime: 'edge' };
 
@@ -13,47 +14,45 @@ interface CardRow {
 interface ReviewRow {
   id: number;
   card_id: number;
+  user_id: number | null;
   interval: number;
   ease_factor: number;
   repetitions: number;
   due_date: number;
 }
 
-interface GradeRequest {
-  cardId: number;
-  grade: number;
-  interval: number;
-  easeFactor: number;
-  repetitions: number;
-  dueDate: number;
-}
-
-export default async function handler(req: any, res?: any): Promise<any> {
-  const sendResponse = (data: any, status = 200) => {
-    if (res && typeof res.status === 'function') {
-      return res.status(status).json(data);
-    }
+export default async function handler(req: Request): Promise<Response> {
+  const sendResponse = (data: unknown, status = 200) => {
     return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
   };
 
-  let lessonId: string | null = null;
+  let lessonId: string | null;
 
   try {
     await runMigrations();
-    lessonId = req.query?.lessonId ?? new URL(req.url || '', 'http://localhost').searchParams.get('lessonId');
+    lessonId = new URL(req.url || '', 'http://localhost').searchParams.get('lessonId');
   } catch (err) {
     console.error('Initialization error:', err);
     return sendResponse({ error: err instanceof Error ? err.message : String(err) }, 500);
   }
 
-  // ── GET /api/review?lessonId=X — get due cards ──
+  // ── GET /api/review?lessonId=X — get due cards (user-scoped) ──
   if (req.method === 'GET') {
     try {
+      const auth = await verifyToken(req);
+      if (!auth) {
+        return sendResponse({ error: 'Not authenticated' }, 401);
+      }
+
       if (!lessonId) {
         return sendResponse({ error: 'lessonId query param required' }, 400);
       }
 
       const lid = Number(lessonId);
+      if (!Number.isInteger(lid) || lid <= 0) {
+        return sendResponse({ error: 'lessonId must be a positive integer' }, 400);
+      }
+
       const cardRows = await sql`SELECT * FROM cards WHERE lesson_id = ${lid}`;
       const cards = cardRows as unknown as CardRow[];
 
@@ -64,7 +63,7 @@ export default async function handler(req: any, res?: any): Promise<any> {
 
       let reviews: ReviewRow[] = [];
       if (cardIds.length > 0) {
-        const reviewRows = await sql`SELECT * FROM review_records WHERE card_id = ANY(${cardIds})`;
+        const reviewRows = await sql`SELECT * FROM review_records WHERE card_id = ANY(${cardIds}) AND user_id = ${auth.userId}`;
         reviews = reviewRows as unknown as ReviewRow[];
       }
       const reviewMap = new Map(reviews.map((r) => [r.card_id, r]));
@@ -98,31 +97,63 @@ export default async function handler(req: any, res?: any): Promise<any> {
     }
   }
 
-  // ── POST /api/review — grade a card ──
+  // ── POST /api/review — grade a card (user-scoped) ──
   if (req.method === 'POST') {
     try {
-      const body =
-        req.body !== undefined && req.body !== null && typeof req.body !== 'object'
-          ? JSON.parse(req.body as string)
-          : req.body && !(req.body instanceof ReadableStream)
-            ? req.body
-            : await req.json();
-      const { cardId, grade, interval, easeFactor, repetitions, dueDate } = body as GradeRequest;
+      const auth = await verifyToken(req);
+      if (!auth) {
+        return sendResponse({ error: 'Not authenticated' }, 401);
+      }
 
-      // Upsert the review record (two separate calls — Neon HTTP endpoint only runs one statement per request)
+      const body = await req.json();
+      const { cardId, grade, interval, easeFactor, repetitions, dueDate } = body as Record<string, unknown>;
+      const numeric = {
+        cardId: Number(cardId),
+        grade: Number(grade),
+        interval: Number(interval),
+        easeFactor: Number(easeFactor),
+        repetitions: Number(repetitions),
+        dueDate: Number(dueDate),
+      };
+
+      if (!Number.isInteger(numeric.cardId) || numeric.cardId <= 0) {
+        return sendResponse({ error: 'cardId must be a positive integer' }, 400);
+      }
+      if (!Number.isInteger(numeric.grade) || numeric.grade < 0 || numeric.grade > 3) {
+        return sendResponse({ error: 'grade must be an integer from 0 to 3' }, 400);
+      }
+      if (!Number.isFinite(numeric.interval) || numeric.interval < 0 || numeric.interval > 36500) {
+        return sendResponse({ error: 'interval is out of range' }, 400);
+      }
+      if (!Number.isFinite(numeric.easeFactor) || numeric.easeFactor < 1 || numeric.easeFactor > 5) {
+        return sendResponse({ error: 'easeFactor is out of range' }, 400);
+      }
+      if (!Number.isInteger(numeric.repetitions) || numeric.repetitions < 0 || numeric.repetitions > 10000) {
+        return sendResponse({ error: 'repetitions is out of range' }, 400);
+      }
+      if (!Number.isFinite(numeric.dueDate) || numeric.dueDate < 0) {
+        return sendResponse({ error: 'dueDate is invalid' }, 400);
+      }
+
+      const cardRows = await sql`SELECT id FROM cards WHERE id = ${numeric.cardId}`;
+      if (cardRows.length === 0) {
+        return sendResponse({ error: 'Card not found' }, 404);
+      }
+
+      // Upsert the review record with user_id
       await sql`
-        INSERT INTO review_records (card_id, interval, ease_factor, repetitions, due_date)
-        VALUES (${cardId}, ${interval}, ${easeFactor}, ${repetitions}, ${dueDate})
-        ON CONFLICT (card_id) DO UPDATE SET
-          interval = ${interval},
-          ease_factor = ${easeFactor},
-          repetitions = ${repetitions},
-          due_date = ${dueDate}
+        INSERT INTO review_records (card_id, user_id, interval, ease_factor, repetitions, due_date)
+        VALUES (${numeric.cardId}, ${auth.userId}, ${numeric.interval}, ${numeric.easeFactor}, ${numeric.repetitions}, ${numeric.dueDate})
+        ON CONFLICT (card_id, user_id) DO UPDATE SET
+          interval = ${numeric.interval},
+          ease_factor = ${numeric.easeFactor},
+          repetitions = ${numeric.repetitions},
+          due_date = ${numeric.dueDate}
       `;
 
       await sql`
-        INSERT INTO session_logs (card_id, grade, reviewed_at)
-        VALUES (${cardId}, ${grade}, ${Date.now()})
+        INSERT INTO session_logs (card_id, user_id, grade, reviewed_at)
+        VALUES (${numeric.cardId}, ${auth.userId}, ${numeric.grade}, ${Date.now()})
       `;
 
       return sendResponse({ ok: true });

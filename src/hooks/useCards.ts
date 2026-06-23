@@ -3,7 +3,7 @@ import { fetchCards, type CardWithReview } from '../api/client';
 
 export function useCards(lessonId: number | 'all') {
   const [cards, setCards] = useState<CardWithReview[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => lessonId !== 'all');
 
   const loadCards = useCallback(async () => {
     if (lessonId === 'all') {
@@ -26,7 +26,7 @@ export function useCards(lessonId: number | 'all') {
   }, [lessonId]);
 
   useEffect(() => {
-    loadCards();
+    void Promise.resolve().then(loadCards);
   }, [loadCards]);
 
   return { cards, loading, reload: loadCards };
