@@ -59,7 +59,9 @@ export async function verifyToken(req: Request): Promise<{ userId: number; role:
 // ── Handler ──
 
 export default async function handler(req: Request): Promise<Response> {
-  await runMigrations();
+  if (process.env.NODE_ENV !== 'production') {
+    await runMigrations();
+  }
 
   const url = new URL(req.url || '', 'http://localhost');
   const path = url.searchParams.get('path') ?? url.pathname.replace(/\/api\/auth\/?/, '');
