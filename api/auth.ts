@@ -43,16 +43,17 @@ export async function verifyToken(req: Request): Promise<{ userId: number; role:
   const token = getToken(req);
   if (!token) return null;
 
-  const rows = await sql`SELECT user_id, expires_at FROM sessions WHERE token = ${token}`;
+  const rows = await sql`
+    SELECT s.user_id, u.role
+    FROM sessions s
+    JOIN users u ON u.id = s.user_id
+    WHERE s.token = ${token} AND s.expires_at >= ${Date.now()}
+    LIMIT 1
+  `;
   if (rows.length === 0) return null;
 
-  const session = rows[0] as { user_id: number; expires_at: number };
-  if (session.expires_at < Date.now()) return null;
-
-  const userRows = await sql`SELECT role FROM users WHERE id = ${session.user_id}`;
-  if (userRows.length === 0) return null;
-
-  return { userId: session.user_id, role: (userRows[0] as { role: string }).role };
+  const session = rows[0] as { user_id: number; role: string };
+  return { userId: session.user_id, role: session.role };
 }
 
 // ── Handler ──
@@ -250,14 +251,20 @@ export default async function handler(req: Request): Promise<Response> {
   // ── GET /api/auth?path=me ──
   if (req.method === 'GET' && path === 'me') {
     try {
-      const auth = await verifyToken(req);
-      if (!auth) {
+      const token = getToken(req);
+      if (!token) {
         return sendResponse({ error: 'Not authenticated' }, 401);
       }
 
-      const rows = await sql`SELECT id, username, email, role, created_at FROM users WHERE id = ${auth.userId}`;
+      const rows = await sql`
+        SELECT u.id, u.username, u.email, u.role, u.created_at
+        FROM sessions s
+        JOIN users u ON u.id = s.user_id
+        WHERE s.token = ${token} AND s.expires_at >= ${Date.now()}
+        LIMIT 1
+      `;
       if (rows.length === 0) {
-        return sendResponse({ error: 'User not found' }, 404);
+        return sendResponse({ error: 'Not authenticated' }, 401);
       }
 
       const user = rows[0] as { id: number; username: string; email: string; role: string; created_at: number };

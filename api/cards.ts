@@ -51,35 +51,38 @@ export default async function handler(req: Request): Promise<Response> {
         return sendResponse({ error: 'lessonId must be a positive integer' }, 400);
       }
 
-      const cardRows = await sql`SELECT * FROM cards WHERE lesson_id = ${lid}`;
-      const cards = cardRows as unknown as CardRow[];
-
-      const cardIds = cards.map((c) => c.id);
-      let reviews: ReviewRow[] = [];
-      if (cardIds.length > 0) {
-        const reviewRows = await sql`SELECT * FROM review_records WHERE card_id = ANY(${cardIds}) AND user_id = ${auth.userId}`;
-        reviews = reviewRows as unknown as ReviewRow[];
-      }
-      const reviewMap = new Map(reviews.map((r) => [r.card_id, r]));
-
-      const enriched = cards.map((card) => {
-        const review = reviewMap.get(card.id);
-        return {
-          id: card.id,
-          lessonId: card.lesson_id,
-          japanese: card.japanese,
-          english: card.english,
-          reading: card.reading,
-          review: review ? {
-            id: review.id,
-            cardId: review.card_id,
-            interval: review.interval,
-            easeFactor: review.ease_factor,
-            repetitions: review.repetitions,
-            dueDate: review.due_date,
-          } : null,
-        };
-      });
+      const rows = await sql`
+        SELECT
+          c.id,
+          c.lesson_id,
+          c.japanese,
+          c.english,
+          c.reading,
+          rr.id AS review_id,
+          rr.interval,
+          rr.ease_factor,
+          rr.repetitions,
+          rr.due_date
+        FROM cards c
+        LEFT JOIN review_records rr ON rr.card_id = c.id AND rr.user_id = ${auth.userId}
+        WHERE c.lesson_id = ${lid}
+        ORDER BY c.id
+      `;
+      const enriched = (rows as unknown as (CardRow & Partial<ReviewRow> & { review_id: number | null })[]).map((card) => ({
+        id: card.id,
+        lessonId: card.lesson_id,
+        japanese: card.japanese,
+        english: card.english,
+        reading: card.reading,
+        review: card.review_id ? {
+          id: card.review_id,
+          cardId: card.id,
+          interval: Number(card.interval),
+          easeFactor: Number(card.ease_factor),
+          repetitions: Number(card.repetitions),
+          dueDate: Number(card.due_date),
+        } : null,
+      }));
 
       return sendResponse(enriched);
     } catch (err) {

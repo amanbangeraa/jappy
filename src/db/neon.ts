@@ -21,8 +21,10 @@ interface QueryResult<T = Record<string, unknown>> {
   rowCount: number;
 }
 
+const sqlClient = neon(getConnectionString());
+let migrationsPromise: Promise<void> | null = null;
+
 export async function executeQuery<T = Record<string, unknown>>(queryText: string, params: unknown[] = []): Promise<QueryResult<T>> {
-  const sqlClient = neon(getConnectionString());
   const rows = await sqlClient.query(queryText, params) as T[];
 
   return {
@@ -50,7 +52,7 @@ export function sql(strings: TemplateStringsArray, ...values: unknown[]): Promis
 
 // -- Migrations ---------------------------------------------------------------
 
-export async function runMigrations(): Promise<void> {
+async function applyMigrations(): Promise<void> {
   // -- Users & Sessions --
   await executeQuery(`CREATE TABLE IF NOT EXISTS users (
     id            SERIAL PRIMARY KEY,
@@ -122,4 +124,12 @@ export async function runMigrations(): Promise<void> {
   await executeQuery(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS level TEXT NOT NULL DEFAULT 'N5'`);
   await executeQuery(`ALTER TABLE review_records ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE`);
   await executeQuery(`ALTER TABLE session_logs ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE`);
+}
+
+export async function runMigrations(): Promise<void> {
+  migrationsPromise ??= applyMigrations().catch((error) => {
+    migrationsPromise = null;
+    throw error;
+  });
+  return migrationsPromise;
 }

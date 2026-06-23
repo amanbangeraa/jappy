@@ -8,9 +8,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY));
   const [loading, setLoading] = useState(true);
 
-  // Validate the cookie-backed session on mount, with localStorage as a legacy fallback.
+  // Avoid blocking the public login page when there is clearly no saved session.
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
+    if (!storedToken) {
+      setLoading(false);
+      return;
+    }
 
     getMe()
       .then((res) => {

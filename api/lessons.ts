@@ -62,75 +62,68 @@ export default async function handler(req: Request): Promise<Response> {
         });
       }
 
-      let rows: unknown[];
+      const now = new Date();
+      now.setHours(23, 59, 59, 999);
+      const endOfToday = now.getTime();
+      const levelFilter = level ? 'WHERE l.level = $1' : '';
+      const baseParams: unknown[] = level ? [level] : [];
+
       if (level) {
         const validLevels = ['N1', 'N2', 'N3', 'N4', 'N5'];
         if (!validLevels.includes(level)) {
           return sendResponse({ error: 'Invalid JLPT level' }, 400);
         }
-
-        rows = await sql`SELECT * FROM lessons WHERE level = ${level} ORDER BY imported_at DESC`;
-      } else {
-        rows = await sql`SELECT * FROM lessons ORDER BY imported_at DESC`;
       }
-      const lessons = rows as unknown as LessonRow[];
 
-      const now = new Date();
-      now.setHours(23, 59, 59, 999);
-      const endOfToday = now.getTime();
+      const query = auth
+        ? `
+          SELECT
+            l.id,
+            l.name,
+            l.level,
+            l.imported_at,
+            COUNT(c.id)::int AS total_cards,
+            COUNT(c.id) FILTER (WHERE rr.id IS NULL OR rr.due_date <= $${baseParams.length + 1})::int AS due_cards,
+            MAX(sl.reviewed_at) AS last_studied
+          FROM lessons l
+          LEFT JOIN cards c ON c.lesson_id = l.id
+          LEFT JOIN review_records rr ON rr.card_id = c.id AND rr.user_id = $${baseParams.length + 2}
+          LEFT JOIN session_logs sl ON sl.card_id = c.id AND sl.user_id = $${baseParams.length + 2}
+          ${levelFilter}
+          GROUP BY l.id, l.name, l.level, l.imported_at
+          ORDER BY l.imported_at DESC
+        `
+        : `
+          SELECT
+            l.id,
+            l.name,
+            l.level,
+            l.imported_at,
+            COUNT(c.id)::int AS total_cards,
+            COUNT(c.id) FILTER (WHERE rr.id IS NULL OR rr.due_date <= $${baseParams.length + 1})::int AS due_cards,
+            MAX(sl.reviewed_at) AS last_studied
+          FROM lessons l
+          LEFT JOIN cards c ON c.lesson_id = l.id
+          LEFT JOIN review_records rr ON rr.card_id = c.id
+          LEFT JOIN session_logs sl ON sl.card_id = c.id
+          ${levelFilter}
+          GROUP BY l.id, l.name, l.level, l.imported_at
+          ORDER BY l.imported_at DESC
+        `;
 
-      // Enrich each lesson with stats (user-scoped when authenticated)
-      const enriched = await Promise.all(
-        lessons.map(async (lesson) => {
-          const cardRows = await sql`SELECT id FROM cards WHERE lesson_id = ${lesson.id}`;
-          const cards = cardRows as unknown as { id: number }[];
-          const totalCards = cards.length;
-          const cardIds = cards.map((c) => c.id);
-
-          let dueCards = 0;
-          if (cardIds.length > 0) {
-            if (auth) {
-              // User-scoped: count unreviewed + due for this user only
-              const reviewRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds}) AND user_id = ${auth.userId}`;
-              const reviewed = reviewRows as unknown as { card_id: number }[];
-              const reviewedIds = new Set(reviewed.map((r) => r.card_id));
-              const unreviewed = cardIds.filter((cid) => !reviewedIds.has(cid));
-
-              const dueRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds}) AND user_id = ${auth.userId} AND due_date <= ${endOfToday}`;
-              const due = dueRows as unknown as { card_id: number }[];
-              const dueRecordIds = new Set(due.map((r) => r.card_id));
-              dueCards = unreviewed.length + dueRecordIds.size;
-            } else {
-              // Global: count all unreviewed + due
-              const reviewRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds})`;
-              const reviewed = reviewRows as unknown as { card_id: number }[];
-              const reviewedIds = new Set(reviewed.map((r) => r.card_id));
-              const unreviewed = cardIds.filter((cid) => !reviewedIds.has(cid));
-
-              const dueRows = await sql`SELECT card_id FROM review_records WHERE card_id = ANY(${cardIds}) AND due_date <= ${endOfToday}`;
-              const due = dueRows as unknown as { card_id: number }[];
-              const dueRecordIds = new Set(due.map((r) => r.card_id));
-              dueCards = unreviewed.length + dueRecordIds.size;
-            }
-          }
-
-          let lastStudied: number | null = null;
-          if (cardIds.length > 0) {
-            if (auth) {
-              const logRows = await sql`SELECT reviewed_at FROM session_logs WHERE card_id = ANY(${cardIds}) AND user_id = ${auth.userId} ORDER BY reviewed_at DESC LIMIT 1`;
-              const logs = logRows as unknown as { reviewed_at: number }[];
-              lastStudied = logs.length > 0 ? logs[0].reviewed_at : null;
-            } else {
-              const logRows = await sql`SELECT reviewed_at FROM session_logs WHERE card_id = ANY(${cardIds}) ORDER BY reviewed_at DESC LIMIT 1`;
-              const logs = logRows as unknown as { reviewed_at: number }[];
-              lastStudied = logs.length > 0 ? logs[0].reviewed_at : null;
-            }
-          }
-
-          const stats: LessonStats = { totalCards, dueCards, lastStudied };
-          return { id: lesson.id, name: lesson.name, level: lesson.level, importedAt: lesson.imported_at, stats };
-        })
-      );
+      const params = auth ? [...baseParams, endOfToday, auth.userId] : [...baseParams, endOfToday];
+      const rows = await executeQuery<LessonRow & { total_cards: number; due_cards: number; last_studied: number | null }>(query, params);
+      const enriched = rows.rows.map((lesson) => ({
+        id: lesson.id,
+        name: lesson.name,
+        level: lesson.level,
+        importedAt: lesson.imported_at,
+        stats: {
+          totalCards: Number(lesson.total_cards),
+          dueCards: Number(lesson.due_cards),
+          lastStudied: lesson.last_studied === null ? null : Number(lesson.last_studied),
+        } satisfies LessonStats,
+      }));
 
       return sendResponse(enriched);
     } catch (err) {
