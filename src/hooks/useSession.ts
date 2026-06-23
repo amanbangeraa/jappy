@@ -84,9 +84,9 @@ export function useSession(lessonId: number | 'all') {
     });
   }, []);
 
-  const gradeCard = useCallback(async (gradeKey: string) => {
+  const gradeCard = useCallback(async (gradeKey: string): Promise<boolean> => {
     const card = queue[index];
-    if (!card || submitting) return;
+    if (!card || submitting) return false;
 
     const grade: Grade = QUALITY_MAP[gradeKey] ?? 0;
 
@@ -143,8 +143,10 @@ export function useSession(lessonId: number | 'all') {
         setFinished(true);
         buildSummary();
       }
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save grade');
+      return false;
     } finally {
       setSubmitting(false);
     }

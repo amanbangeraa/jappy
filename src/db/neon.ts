@@ -106,6 +106,11 @@ async function applyMigrations(): Promise<void> {
     reviewed_at BIGINT NOT NULL
   )`);
 
+  // -- Alter existing tables to add columns if missing --
+  await executeQuery(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS level TEXT NOT NULL DEFAULT 'N5'`);
+  await executeQuery(`ALTER TABLE review_records ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE`);
+  await executeQuery(`ALTER TABLE session_logs ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE`);
+
   // -- Indexes --
   await executeQuery(`CREATE INDEX IF NOT EXISTS idx_cards_lesson_id ON cards(lesson_id)`);
   await executeQuery(`DELETE FROM review_records a
@@ -119,11 +124,6 @@ async function applyMigrations(): Promise<void> {
   await executeQuery(`CREATE INDEX IF NOT EXISTS idx_session_logs_card_id ON session_logs(card_id)`);
   await executeQuery(`CREATE INDEX IF NOT EXISTS idx_session_logs_reviewed_at ON session_logs(reviewed_at)`);
   await executeQuery(`CREATE INDEX IF NOT EXISTS idx_session_logs_user_id ON session_logs(user_id)`);
-
-  // -- Alter existing tables to add columns if missing --
-  await executeQuery(`ALTER TABLE lessons ADD COLUMN IF NOT EXISTS level TEXT NOT NULL DEFAULT 'N5'`);
-  await executeQuery(`ALTER TABLE review_records ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE`);
-  await executeQuery(`ALTER TABLE session_logs ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE`);
 }
 
 export async function runMigrations(): Promise<void> {

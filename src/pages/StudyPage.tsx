@@ -17,7 +17,7 @@ const StudyPage: FC = () => {
   const lessonId = lessonParam === 'all' ? 'all' : Number(lessonParam);
   const homePath = user?.role === 'admin' ? '/admin' : '/student';
 
-  const { currentCard, loading, finished, summary, progress, startSession, gradeCard } =
+  const { currentCard, loading, finished, summary, progress, error, submitting, startSession, gradeCard } =
     useSession(lessonId);
 
   const [flipped, setFlipped] = useState(false);
@@ -43,15 +43,17 @@ const StudyPage: FC = () => {
   }, [finished, summary, navigate]);
 
   const handleGrade = useCallback((key: 'miss' | 'got') => {
-    setFlipped(false);
+    if (submitting) return;
     setDragX(0);
     setIsDragging(false);
-    gradeCard(key);
-  }, [gradeCard]);
+    void gradeCard(key).then((saved) => {
+      if (saved) setFlipped(false);
+    });
+  }, [gradeCard, submitting]);
 
   /* ── Pointer / Touch handlers ── */
   const onDragStart = (clientX: number) => {
-    if (!flipped) return;
+    if (!flipped || submitting) return;
     startXRef.current = clientX;
     setIsDragging(true);
   };
@@ -205,6 +207,12 @@ const StudyPage: FC = () => {
         </div>
       </div>
 
+      {error && (
+        <div className="alert alert-error" style={{ marginBottom: 12, textAlign: 'center' }}>
+          {error}
+        </div>
+      )}
+
       {/* ── Hint / Action area ── */}
       {!flipped ? (
         <div style={{ textAlign: 'center', paddingBottom: 16 }}>
@@ -243,6 +251,7 @@ const StudyPage: FC = () => {
               className="btn btn-red"
               style={{ fontSize: 16, padding: '16px 12px', borderRadius: 'var(--radius-lg)', gap: 10 }}
               onClick={() => handleGrade('miss')}
+              disabled={submitting}
             >
               <Icon name="x" size={20} strokeWidth={2.5} />
               Missed
@@ -253,6 +262,7 @@ const StudyPage: FC = () => {
               className="btn btn-green"
               style={{ fontSize: 16, padding: '16px 12px', borderRadius: 'var(--radius-lg)', gap: 10 }}
               onClick={() => handleGrade('got')}
+              disabled={submitting}
             >
               <Icon name="check" size={20} strokeWidth={2.5} />
               Got it!
