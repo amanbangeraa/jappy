@@ -6,6 +6,9 @@ import type { Grade, ReviewRecord, SessionResult, SummaryData } from '../types';
 export function useSession(lessonId: number | 'all') {
   const [queue, setQueue] = useState<DueCard[]>([]);
   const [index, setIndex] = useState(0);
+  const queueRef = useRef<DueCard[]>([]);
+  const indexRef = useRef(0);
+  const gradingRef = useRef(false);
   const resultsRef = useRef<SessionResult[]>([]);
   // Track which card IDs have already been re-queued this session (1 re-queue max per card)
   const requeuedRef = useRef<Set<number>>(new Set());
@@ -24,11 +27,22 @@ export function useSession(lessonId: number | 'all') {
     return a;
   };
 
+  const setSessionQueue = useCallback((nextQueue: DueCard[]) => {
+    queueRef.current = nextQueue;
+    setQueue(nextQueue);
+  }, []);
+
+  const setSessionIndex = useCallback((nextIndex: number) => {
+    indexRef.current = nextIndex;
+    setIndex(nextIndex);
+  }, []);
+
   const startSession = useCallback(async () => {
     setLoading(true);
     setFinished(false);
-    setQueue([]);
-    setIndex(0);
+    setSessionQueue([]);
+    setSessionIndex(0);
+    gradingRef.current = false;
     resultsRef.current = [];
     requeuedRef.current = new Set();
     setSummary(null);
@@ -45,10 +59,10 @@ export function useSession(lessonId: number | 'all') {
             dueCards.push(card);
           }
         }
-        setQueue(shuffle(dueCards));
+        setSessionQueue(shuffle(dueCards));
       } else {
         const cards = await fetchDueCards(lessonId);
-        setQueue(shuffle(cards));
+        setSessionQueue(shuffle(cards));
       }
     } catch (err) {
       console.error('Failed to start session:', err);
@@ -56,7 +70,7 @@ export function useSession(lessonId: number | 'all') {
     } finally {
       setLoading(false);
     }
-  }, [lessonId]);
+  }, [lessonId, setSessionIndex, setSessionQueue]);
 
   const buildSummary = useCallback(() => {
     const results = resultsRef.current;
@@ -83,9 +97,14 @@ export function useSession(lessonId: number | 'all') {
   }, []);
 
   const gradeCard = useCallback(async (gradeKey: string) => {
-    const card = queue[index];
+    if (gradingRef.current) return;
+
+    const currentQueue = queueRef.current;
+    const currentIndex = indexRef.current;
+    const card = currentQueue[currentIndex];
     if (!card) return;
 
+    gradingRef.current = true;
     const grade: Grade = QUALITY_MAP[gradeKey] ?? 0;
 
     // Compute updated SM2 state before saving so the server and UI stay in sync.
@@ -119,37 +138,39 @@ export function useSession(lessonId: number | 'all') {
         grade,
       });
 
-      let nextQueue = queue;
+      let nextQueue = currentQueue;
 
       // Re-queue if missed and not already re-queued this session.
       if (grade < 2 && !requeuedRef.current.has(card.id!)) {
         requeuedRef.current.add(card.id!);
-        nextQueue = [...queue, {
+        nextQueue = [...currentQueue, {
           ...card,
           interval: updated.interval,
           easeFactor: updated.easeFactor,
           repetitions: updated.repetitions,
           dueDate: updated.dueDate,
         }];
-        setQueue(nextQueue);
+        setSessionQueue(nextQueue);
       }
 
-      const nextIndex = index + 1;
-      setIndex(nextIndex);
+      const nextIndex = currentIndex + 1;
+      setSessionIndex(nextIndex);
       if (nextIndex >= nextQueue.length) {
         setFinished(true);
         buildSummary();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save grade');
+    } finally {
+      gradingRef.current = false;
     }
-  }, [buildSummary, index, queue]);
+  }, [buildSummary, setSessionIndex, setSessionQueue]);
 
   const currentCard = queue[index] ?? null;
 
   // Progress tracks actual queue position, including re-queued cards from misses.
   const progress = {
-    current: index + 1,
+    current: Math.min(index + 1, queue.length),
     total: queue.length,
   };
 
