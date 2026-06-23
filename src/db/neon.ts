@@ -2,6 +2,8 @@
 
 import { neon } from '@neondatabase/serverless';
 
+declare const process: { env: Record<string, string | undefined> };
+
 function getConnectionString(): string {
   const connectionString = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
   if (!connectionString) {
@@ -20,22 +22,15 @@ interface QueryResult<T = Record<string, unknown>> {
 }
 
 export async function executeQuery<T = Record<string, unknown>>(queryText: string, params: unknown[] = []): Promise<QueryResult<T>> {
-  try {
-    const sqlClient = neon(getConnectionString());
-    const rows = await sqlClient.query(queryText, params) as T[];
+  const sqlClient = neon(getConnectionString());
+  const rows = await sqlClient.query(queryText, params) as T[];
 
-    return {
-      fields: [],
-      rows,
-      command: '',
-      rowCount: rows.length,
-    };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Database query failed: ${error.message}`, { cause: error });
-    }
-    throw new Error('Unknown database query error', { cause: error });
-  }
+  return {
+    fields: [],
+    rows,
+    command: '',
+    rowCount: rows.length,
+  };
 }
 
 /**

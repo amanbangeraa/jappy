@@ -1,7 +1,5 @@
-import { sql, runMigrations } from '../src/db/neon';
+import { sql, runMigrations } from '../src/db/neon.js';
 import bcrypt from 'bcryptjs';
-
-export const config = { runtime: 'edge' };
 
 // ── Helpers ──
 

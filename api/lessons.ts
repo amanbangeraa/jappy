@@ -1,7 +1,5 @@
-import { sql, runMigrations, executeQuery } from '../src/db/neon';
-import { verifyToken } from './auth';
-
-export const config = { runtime: 'edge' };
+import { sql, runMigrations, executeQuery } from '../src/db/neon.js';
+import { verifyToken } from './auth.js';
 
 interface LessonRow {
   id: number;
