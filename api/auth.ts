@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { sql, runMigrations } from '../src/db/neon.js';
 import bcrypt from 'bcryptjs';
+import { adaptHandler } from './http.js';
 
 // ── Helpers ──
 
@@ -118,7 +119,7 @@ export async function verifyToken(req: Request): Promise<{ userId: number; role:
 
 // ── Handler ──
 
-export default async function handler(req: Request): Promise<Response> {
+async function authHandler(req: Request): Promise<Response> {
   if (process.env.NODE_ENV !== 'production') {
     await runMigrations();
   }
@@ -300,3 +301,5 @@ export default async function handler(req: Request): Promise<Response> {
 
   return sendResponse({ error: 'Not found' }, 404);
 }
+
+export default adaptHandler(authHandler);

@@ -1,5 +1,6 @@
 import { sql, runMigrations, executeQuery } from '../src/db/neon.js';
 import { verifyToken } from './auth.js';
+import { adaptHandler } from './http.js';
 
 interface LessonRow {
   id: number;
@@ -14,7 +15,7 @@ interface LessonStats {
   lastStudied: number | null;
 }
 
-export default async function handler(req: Request): Promise<Response> {
+async function lessonsHandler(req: Request): Promise<Response> {
   const sendResponse = (data: unknown, status = 200) => {
     return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
   };
@@ -244,3 +245,5 @@ export default async function handler(req: Request): Promise<Response> {
 
   return sendResponse({ error: 'Method not allowed' }, 405);
 }
+
+export default adaptHandler(lessonsHandler);
