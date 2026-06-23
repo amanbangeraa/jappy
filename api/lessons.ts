@@ -83,8 +83,8 @@ async function lessonsHandler(req: Request): Promise<Response> {
             l.name,
             l.level,
             l.imported_at,
-            COUNT(c.id)::int AS total_cards,
-            COUNT(c.id) FILTER (WHERE rr.id IS NULL OR rr.due_date <= $${baseParams.length + 1})::int AS due_cards,
+            COUNT(DISTINCT c.id)::int AS total_cards,
+            COUNT(DISTINCT c.id) FILTER (WHERE rr.id IS NULL OR rr.due_date <= $${baseParams.length + 1})::int AS due_cards,
             MAX(sl.reviewed_at) AS last_studied
           FROM lessons l
           LEFT JOIN cards c ON c.lesson_id = l.id
@@ -100,8 +100,8 @@ async function lessonsHandler(req: Request): Promise<Response> {
             l.name,
             l.level,
             l.imported_at,
-            COUNT(c.id)::int AS total_cards,
-            COUNT(c.id) FILTER (WHERE rr.id IS NULL OR rr.due_date <= $${baseParams.length + 1})::int AS due_cards,
+            COUNT(DISTINCT c.id)::int AS total_cards,
+            COUNT(DISTINCT c.id) FILTER (WHERE rr.id IS NULL OR rr.due_date <= $${baseParams.length + 1})::int AS due_cards,
             MAX(sl.reviewed_at) AS last_studied
           FROM lessons l
           LEFT JOIN cards c ON c.lesson_id = l.id
