@@ -35,7 +35,10 @@ const StudyPage: FC = () => {
   useEffect(() => {
     if (finished && summary && !hasNavigated.current) {
       hasNavigated.current = true;
-      navigate('/summary', { state: { summary } as { summary: SummaryData }, replace: true });
+      navigate('/summary', {
+        state: { summary, studyPath: `/study?lesson=${lessonParam}` } as { summary: SummaryData; studyPath: string },
+        replace: true,
+      });
     }
   }, [finished, summary, navigate]);
 

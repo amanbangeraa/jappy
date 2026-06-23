@@ -9,7 +9,9 @@ const SummaryPage: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const summary: SummaryData | null = (location.state as { summary?: SummaryData })?.summary ?? null;
+  const state = location.state as { summary?: SummaryData; studyPath?: string } | null;
+  const summary: SummaryData | null = state?.summary ?? null;
+  const studyPath = state?.studyPath ?? '/study';
   const homePath = user?.role === 'admin' ? '/admin' : '/student';
 
   const [barsVisible, setBarsVisible] = useState(false);
@@ -30,7 +32,8 @@ const SummaryPage: FC = () => {
   }
 
   const { totalReviewed, againCount, goodCount, xpEarned, accuracy, results } = summary;
-  // Two buckets: missed = againCount, got it = goodCount
+  // Match the stats: re-queued cards can have multiple answers, so show only the final answer per card.
+  const finalResults = Array.from(new Map(results.map((result) => [result.cardId, result])).values());
   const missedCount = againCount;
   const gotItCount  = goodCount;
 
@@ -141,10 +144,10 @@ const SummaryPage: FC = () => {
       {/* ── Card results ── */}
       {showDetails && (
         <div className="summary-details anim-fadeIn">
-          {results.map((r, i) => {
+          {finalResults.map((r, i) => {
             const isGot = r.grade >= 2;
             return (
-              <div key={i} className="summary-result-row" style={{
+              <div key={r.cardId} className="summary-result-row" style={{
                 animation: `fadeInUp 0.3s ease-out ${i * 30}ms both`,
               }}>
                 <div className="summary-result-text">
@@ -174,7 +177,7 @@ const SummaryPage: FC = () => {
         <button className="btn btn-ghost" onClick={() => navigate(homePath)}>
           <Icon name="home" size={16} /> Home
         </button>
-        <button className="btn btn-green" onClick={() => navigate(homePath)}>
+        <button className="btn btn-green" onClick={() => navigate(studyPath)}>
           <Icon name="lightning" size={16} /> Study again
         </button>
       </div>
