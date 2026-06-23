@@ -14,6 +14,7 @@ export function useSession(lessonId: number | 'all') {
   const [finished, setFinished] = useState(false);
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const shuffle = <T,>(arr: T[]): T[] => {
     const a = [...arr];
@@ -33,6 +34,7 @@ export function useSession(lessonId: number | 'all') {
     requeuedRef.current = new Set();
     setSummary(null);
     setError(null);
+    setSubmitting(false);
 
     try {
       if (lessonId === 'all') {
@@ -82,22 +84,13 @@ export function useSession(lessonId: number | 'all') {
     });
   }, []);
 
-  const gradeCard = useCallback((gradeKey: string) => {
+  const gradeCard = useCallback(async (gradeKey: string) => {
     const card = queue[index];
-    if (!card) return;
+    if (!card || submitting) return;
 
     const grade: Grade = QUALITY_MAP[gradeKey] ?? 0;
 
-    // Record result optimistically.
-    resultsRef.current.push({
-      cardId: card.id!,
-      japanese: card.japanese,
-      english: card.english,
-      reading: card.reading,
-      grade,
-    });
-
-    // Compute updated SM2 state.
+    // Compute updated SM2 state before saving so the server and UI stay in sync.
     const existing: ReviewRecord = {
       cardId: card.id!,
       interval: card.interval ?? 1,
@@ -108,46 +101,54 @@ export function useSession(lessonId: number | 'all') {
 
     const updated = updateReview(existing, grade);
 
-    // Fire-and-forget API call; don't block UI advancement.
-    submitGrade({
-      cardId: card.id!,
-      grade,
-      interval: updated.interval,
-      easeFactor: updated.easeFactor,
-      repetitions: updated.repetitions,
-      dueDate: updated.dueDate,
-    }).catch((err) => {
-      // Revert optimistic result on failure.
-      resultsRef.current = resultsRef.current.filter(
-        (r) => !(r.cardId === card.id! && r.grade === grade)
-      );
-      setError(err instanceof Error ? err.message : 'Failed to save grade');
-    });
+    setSubmitting(true);
+    setError(null);
 
-    let nextQueue = queue;
-
-    // Re-queue if missed and not already re-queued this session.
-    // Use the UPDATED SM2 values so the re-queued card has correct schedule state.
-    if (grade < 2 && !requeuedRef.current.has(card.id!)) {
-      requeuedRef.current.add(card.id!);
-      nextQueue = [...queue, {
-        ...card,
+    try {
+      await submitGrade({
+        cardId: card.id!,
+        grade,
         interval: updated.interval,
         easeFactor: updated.easeFactor,
         repetitions: updated.repetitions,
         dueDate: updated.dueDate,
-      }];
-      setQueue(nextQueue);
-    }
+      });
 
-    // Advance to the next card immediately.
-    const nextIndex = index + 1;
-    setIndex(nextIndex);
-    if (nextIndex >= nextQueue.length) {
-      setFinished(true);
-      buildSummary();
+      resultsRef.current.push({
+        cardId: card.id!,
+        japanese: card.japanese,
+        english: card.english,
+        reading: card.reading,
+        grade,
+      });
+
+      let nextQueue = queue;
+
+      // Re-queue if missed and not already re-queued this session.
+      if (grade < 2 && !requeuedRef.current.has(card.id!)) {
+        requeuedRef.current.add(card.id!);
+        nextQueue = [...queue, {
+          ...card,
+          interval: updated.interval,
+          easeFactor: updated.easeFactor,
+          repetitions: updated.repetitions,
+          dueDate: updated.dueDate,
+        }];
+        setQueue(nextQueue);
+      }
+
+      const nextIndex = index + 1;
+      setIndex(nextIndex);
+      if (nextIndex >= nextQueue.length) {
+        setFinished(true);
+        buildSummary();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save grade');
+    } finally {
+      setSubmitting(false);
     }
-  }, [buildSummary, index, queue]);
+  }, [buildSummary, index, queue, submitting]);
 
   const currentCard = queue[index] ?? null;
 
@@ -164,6 +165,7 @@ export function useSession(lessonId: number | 'all') {
     summary,
     progress,
     error,
+    submitting,
     startSession,
     gradeCard,
   };
