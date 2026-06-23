@@ -61,9 +61,9 @@ export default async function handler(req: Request): Promise<Response> {
   await runMigrations();
 
   const url = new URL(req.url || '', 'http://localhost');
-  const path = url.pathname.replace(/\/api\/auth\/?/, '');
+  const path = url.searchParams.get('path') ?? url.pathname.replace(/\/api\/auth\/?/, '');
 
-  // ── POST /api/auth/admin-login ── (admin-only login)
+  // ── POST /api/auth?path=admin-login ── (admin-only login)
   if (req.method === 'POST' && path === 'admin-login') {
     try {
       const body = await req.json();
@@ -115,7 +115,7 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
-  // ── POST /api/auth/register ──
+  // ── POST /api/auth?path=register ──
   if (req.method === 'POST' && path === 'register') {
     try {
       const body = await req.json();
@@ -181,7 +181,7 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
-  // ── POST /api/auth/login ──
+  // ── POST /api/auth?path=login ──
   if (req.method === 'POST' && path === 'login') {
     try {
       const body = await req.json();
@@ -233,7 +233,7 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
-  // ── POST /api/auth/logout ──
+  // ── POST /api/auth?path=logout ──
   if (req.method === 'POST' && path === 'logout') {
     try {
       const token = getToken(req);
@@ -247,7 +247,7 @@ export default async function handler(req: Request): Promise<Response> {
     }
   }
 
-  // ── GET /api/auth/me ──
+  // ── GET /api/auth?path=me ──
   if (req.method === 'GET' && path === 'me') {
     try {
       const auth = await verifyToken(req);

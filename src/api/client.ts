@@ -23,32 +23,32 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 // ── Auth ──
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
-  return request<AuthResponse>('/auth/login', {
+  return request<AuthResponse>('/auth?path=login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   });
 }
 
 export async function register(data: RegisterData): Promise<AuthResponse> {
-  return request<AuthResponse>('/auth/register', {
+  return request<AuthResponse>('/auth?path=register', {
     method: 'POST',
     body: JSON.stringify(data),
   });
 }
 
 export async function adminLogin(email: string, password: string): Promise<AuthResponse> {
-  return request<AuthResponse>('/auth/admin-login', {
+  return request<AuthResponse>('/auth?path=admin-login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   });
 }
 
 export async function logout(): Promise<void> {
-  await request('/auth/logout', { method: 'POST' });
+  await request('/auth?path=logout', { method: 'POST' });
 }
 
 export async function getMe(): Promise<{ user: AuthResponse['user'] }> {
-  return request<{ user: AuthResponse['user'] }>('/auth/me');
+  return request<{ user: AuthResponse['user'] }>('/auth?path=me');
 }
 
 // ── Lessons ──
