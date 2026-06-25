@@ -1,4 +1,4 @@
-import { type FC, useMemo } from 'react';
+import { type FC } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
 import { useCards } from '../hooks/useCards';
@@ -28,17 +28,9 @@ const LessonPage: FC = () => {
     );
   }
 
-  const dueCardList = useMemo(() => {
-    const now = new Date();
-    now.setHours(23, 59, 59, 999);
-    const endOfToday = now.getTime();
-
-    return cards.filter((card) => !card.review || card.review.dueDate <= endOfToday);
-  }, [cards]);
-
-  const totalCards = lesson?.stats.totalCards ?? cards.length;
-  const dueCards = loading ? (lesson?.stats.dueCards ?? 0) : dueCardList.length;
-  const hasDue = dueCards > 0;
+  const hasDue = (lesson?.stats.dueCards ?? 0) > 0;
+  const totalCards = lesson?.stats.totalCards ?? 0;
+  const dueCards   = lesson?.stats.dueCards ?? 0;
   const pct = totalCards > 0 ? Math.round(((totalCards - dueCards) / totalCards) * 100) : 0;
   const levelColor = lesson ? LEVEL_COLORS[lesson.level as JLPTLevel] ?? 'var(--text-muted)' : 'var(--text-muted)';
 
@@ -120,7 +112,7 @@ const LessonPage: FC = () => {
       </div>
 
       {/* ── All done ── */}
-      {lesson && !loading && !hasDue && (
+      {lesson && !hasDue && (
         <div className="empty-state anim-popIn" style={{ padding: '48px 24px' }}>
           <div style={{ color: 'var(--green)', marginBottom: 12 }}>
             <Icon name="check-circle" size={64} strokeWidth={1.4} color="var(--green)" />
@@ -137,7 +129,7 @@ const LessonPage: FC = () => {
         <div className="loading-text">Loading cards…</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {dueCardList.map((card, i) => (
+          {cards.map((card, i) => (
             <div key={card.id} className="word-row anim-fadeInUp" style={{ animationDelay: `${i * 40}ms` }}>
               <div className="word-main">
                 <span className="word-ja">{card.japanese}</span>

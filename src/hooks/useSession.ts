@@ -120,6 +120,36 @@ export function useSession(lessonId: number | 'all') {
 
     setError(null);
 
+    resultsRef.current.push({
+      cardId: card.id!,
+      japanese: card.japanese,
+      english: card.english,
+      reading: card.reading,
+      grade,
+    });
+
+    let nextQueue = currentQueue;
+
+    // Re-queue if missed and not already re-queued this session.
+    if (grade < 2 && !requeuedRef.current.has(card.id!)) {
+      requeuedRef.current.add(card.id!);
+      nextQueue = [...currentQueue, {
+        ...card,
+        interval: updated.interval,
+        easeFactor: updated.easeFactor,
+        repetitions: updated.repetitions,
+        dueDate: updated.dueDate,
+      }];
+      setSessionQueue(nextQueue);
+    }
+
+    const nextIndex = currentIndex + 1;
+    setSessionIndex(nextIndex);
+    if (nextIndex >= nextQueue.length) {
+      setFinished(true);
+      buildSummary();
+    }
+
     try {
       await submitGrade({
         cardId: card.id!,
@@ -129,36 +159,6 @@ export function useSession(lessonId: number | 'all') {
         repetitions: updated.repetitions,
         dueDate: updated.dueDate,
       });
-
-      resultsRef.current.push({
-        cardId: card.id!,
-        japanese: card.japanese,
-        english: card.english,
-        reading: card.reading,
-        grade,
-      });
-
-      let nextQueue = currentQueue;
-
-      // Re-queue if missed and not already re-queued this session.
-      if (grade < 2 && !requeuedRef.current.has(card.id!)) {
-        requeuedRef.current.add(card.id!);
-        nextQueue = [...currentQueue, {
-          ...card,
-          interval: updated.interval,
-          easeFactor: updated.easeFactor,
-          repetitions: updated.repetitions,
-          dueDate: updated.dueDate,
-        }];
-        setSessionQueue(nextQueue);
-      }
-
-      const nextIndex = currentIndex + 1;
-      setSessionIndex(nextIndex);
-      if (nextIndex >= nextQueue.length) {
-        buildSummary();
-        setFinished(true);
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save grade');
     } finally {
