@@ -50,6 +50,18 @@ const FlashCard: FC<FlashCardProps> = ({ japanese, reading, english, flipped, on
                 letterSpacing: '0.12em',
                 color: 'var(--text-muted)',
               }}>
+                Kanji
+              </span>
+              <span className="font-jp flash-card-text" style={{ fontSize: 'clamp(34px, 8vw, 54px)' }}>
+                {japanese}
+              </span>
+              <span style={{
+                fontSize: 11,
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.12em',
+                color: 'var(--text-muted)',
+              }}>
                 Romaji
               </span>
               <span className="flash-card-meaning">
