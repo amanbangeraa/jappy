@@ -54,7 +54,7 @@ const LessonCard: FC<LessonCardProps> = ({ name, stats, onClick }) => {
         </div>
 
         <div className="lesson-card-meta">
-          <span>{totalCards} words</span>
+          <span>{totalCards} cards</span>
           {lastStr && (
             <>
               <span className="lesson-card-dot">·</span>

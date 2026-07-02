@@ -5,6 +5,7 @@ import { adaptHandler } from './http.js';
 interface CardRow {
   id: number;
   lesson_id: number;
+  lesson_level: string;
   japanese: string;
   english: string;
   reading: string | null;
@@ -56,6 +57,7 @@ async function cardsHandler(req: Request): Promise<Response> {
         SELECT
           c.id,
           c.lesson_id,
+          l.level AS lesson_level,
           c.japanese,
           c.english,
           c.reading,
@@ -65,6 +67,7 @@ async function cardsHandler(req: Request): Promise<Response> {
           rr.repetitions,
           rr.due_date
         FROM cards c
+        JOIN lessons l ON l.id = c.lesson_id
         LEFT JOIN review_records rr ON rr.card_id = c.id AND rr.user_id = ${auth.userId}
         WHERE c.lesson_id = ${lid}
         ORDER BY c.id
@@ -72,6 +75,7 @@ async function cardsHandler(req: Request): Promise<Response> {
       const enriched = (rows as unknown as (CardRow & Partial<ReviewRow> & { review_id: number | null })[]).map((card) => ({
         id: card.id,
         lessonId: card.lesson_id,
+        lessonLevel: card.lesson_level,
         japanese: card.japanese,
         english: card.english,
         reading: card.reading,

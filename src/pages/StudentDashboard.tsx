@@ -2,7 +2,7 @@ import { type CSSProperties, type FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
 import { useAuth } from '../contexts/auth';
-import { LEVEL_ORDER, LEVEL_COLORS, LEVEL_LABELS, type JLPTLevel } from '../types';
+import { LEVEL_ORDER, LEVEL_COLORS, LEVEL_LABELS, type LessonLevel } from '../types';
 import type { LessonWithStats } from '../api/client';
 import LessonCard from '../components/LessonCard';
 import Icon from '../components/Icon';
@@ -12,15 +12,15 @@ const StudentDashboard: FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { lessons, loading } = useLessons();
-  const [selectedLevel, setSelectedLevel] = useState<JLPTLevel | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<LessonLevel | null>(null);
   const [showLessons, setShowLessons] = useState(false);
 
-  const groupedLessons: Record<JLPTLevel, LessonWithStats[]> = {
-    N5: [], N4: [], N3: [], N2: [], N1: [],
+  const groupedLessons: Record<LessonLevel, LessonWithStats[]> = {
+    N5: [], N4: [], N3: [], N2: [], N1: [], Kanji: [],
   };
 
   for (const lesson of lessons) {
-    const lvl = lesson.level as JLPTLevel;
+    const lvl = lesson.level as LessonLevel;
     if (groupedLessons[lvl]) {
       groupedLessons[lvl].push(lesson);
     }
@@ -127,7 +127,7 @@ const StudentDashboard: FC = () => {
 
           {lessons.length > 0 && (
             <div className="student-filter-panel anim-fadeInUp">
-              <label className="level-select-label">Filter by level</label>
+              <label className="level-select-label">Filter by section</label>
               <div className="student-filter-chips">
                 {LEVEL_ORDER.map((lvl) => {
                   const count = groupedLessons[lvl].length;

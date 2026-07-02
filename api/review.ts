@@ -5,6 +5,7 @@ import { adaptHandler } from './http.js';
 interface CardRow {
   id: number;
   lesson_id: number;
+  lesson_level: string;
   japanese: string;
   english: string;
   reading: string | null;
@@ -52,7 +53,12 @@ async function reviewHandler(req: Request): Promise<Response> {
         return sendResponse({ error: 'lessonId must be a positive integer' }, 400);
       }
 
-      const cardRows = await sql`SELECT * FROM cards WHERE lesson_id = ${lid}`;
+      const cardRows = await sql`
+        SELECT c.id, c.lesson_id, l.level AS lesson_level, c.japanese, c.english, c.reading
+        FROM cards c
+        JOIN lessons l ON l.id = c.lesson_id
+        WHERE c.lesson_id = ${lid}
+      `;
       const cards = cardRows as unknown as CardRow[];
 
       const cardIds = cards.map((c) => c.id);
@@ -74,6 +80,7 @@ async function reviewHandler(req: Request): Promise<Response> {
           return {
             id: card.id,
             lessonId: card.lesson_id,
+            lessonLevel: card.lesson_level,
             japanese: card.japanese,
             english: card.english,
             reading: card.reading,

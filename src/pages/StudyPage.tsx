@@ -156,6 +156,7 @@ const StudyPage: FC = () => {
             reading={currentCard.reading}
             english={currentCard.english}
             flipped={flipped}
+            kanjiMode={currentCard.lessonLevel === 'Kanji'}
             onFlip={() => { if (!flipped && !isDragging) setFlipped(true); }}
           />
 

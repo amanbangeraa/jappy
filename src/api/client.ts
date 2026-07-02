@@ -1,4 +1,4 @@
-import type { Lesson, Card, ReviewRecord, LessonStats, JLPTLevel, AuthResponse, RegisterData } from '../types';
+import type { Lesson, Card, ReviewRecord, LessonStats, LessonLevel, AuthResponse, RegisterData } from '../types';
 
 const API_BASE = '/api';
 const API_TIMEOUT_MS = 20_000;
@@ -71,14 +71,14 @@ export interface LessonWithStats extends Lesson {
   stats: LessonStats;
 }
 
-export async function fetchLessons(level?: JLPTLevel): Promise<LessonWithStats[]> {
+export async function fetchLessons(level?: LessonLevel): Promise<LessonWithStats[]> {
   const query = level ? `?level=${level}` : '';
   return request<LessonWithStats[]>(`/lessons${query}`);
 }
 
 export async function importLesson(
   name: string,
-  level: JLPTLevel,
+  level: LessonLevel,
   cards: { japanese: string; english: string; reading?: string }[],
 ): Promise<LessonWithStats> {
   return request<LessonWithStats>('/lessons', {
@@ -94,6 +94,7 @@ export async function deleteLesson(id: number): Promise<void> {
 // ── Cards ──
 
 export interface CardWithReview extends Card {
+  lessonLevel: LessonLevel;
   review: ReviewRecord | null;
 }
 
@@ -104,6 +105,7 @@ export async function fetchCards(lessonId: number): Promise<CardWithReview[]> {
 // ── Review / Study ──
 
 export interface DueCard extends Card {
+  lessonLevel: LessonLevel;
   dueDate: number;
   interval: number;
   easeFactor: number;

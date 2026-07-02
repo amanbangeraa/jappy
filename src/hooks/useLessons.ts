@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchLessons, importLesson, deleteLesson, type LessonWithStats } from '../api/client';
-import type { JLPTLevel } from '../types';
+import type { LessonLevel } from '../types';
 
-export function useLessons(level?: JLPTLevel) {
+export function useLessons(level?: LessonLevel) {
   const [lessons, setLessons] = useState<LessonWithStats[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +22,7 @@ export function useLessons(level?: JLPTLevel) {
     void Promise.resolve().then(loadLessons);
   }, [loadLessons]);
 
-  const importCSV = useCallback(async (name: string, lessonLevel: JLPTLevel, cards: { japanese: string; english: string; reading?: string }[]) => {
+  const importCSV = useCallback(async (name: string, lessonLevel: LessonLevel, cards: { japanese: string; english: string; reading?: string }[]) => {
     const lesson = await importLesson(name, lessonLevel, cards);
     await loadLessons();
     return lesson;

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
 import { useCards } from '../hooks/useCards';
 import { useAuth } from '../contexts/auth';
-import { LEVEL_COLORS, type JLPTLevel } from '../types';
+import { LEVEL_COLORS, type LessonLevel } from '../types';
 import Icon from '../components/Icon';
 
 const LessonPage: FC = () => {
@@ -32,7 +32,7 @@ const LessonPage: FC = () => {
   const totalCards = lesson?.stats.totalCards ?? 0;
   const dueCards   = lesson?.stats.dueCards ?? 0;
   const pct = totalCards > 0 ? Math.round(((totalCards - dueCards) / totalCards) * 100) : 0;
-  const levelColor = lesson ? LEVEL_COLORS[lesson.level as JLPTLevel] ?? 'var(--text-muted)' : 'var(--text-muted)';
+  const levelColor = lesson ? LEVEL_COLORS[lesson.level as LessonLevel] ?? 'var(--text-muted)' : 'var(--text-muted)';
 
   const handleDelete = async () => {
     if (!lesson?.id) return;

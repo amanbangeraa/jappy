@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLessons } from '../hooks/useLessons';
 import { useAuth } from '../contexts/auth';
 import { parseCSV } from '../utils/csvParser';
-import { LEVEL_ORDER, LEVEL_COLORS, LEVEL_LABELS, type JLPTLevel } from '../types';
+import { LEVEL_ORDER, LEVEL_COLORS, LEVEL_LABELS, type LessonLevel } from '../types';
 import type { LessonWithStats } from '../api/client';
 import LessonCard from '../components/LessonCard';
 import Icon from '../components/Icon';
@@ -17,7 +17,7 @@ const AdminDashboard: FC = () => {
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<{ text: string; lessonId: number } | null>(null);
-  const [selectedLevel, setSelectedLevel] = useState<JLPTLevel>('N5');
+  const [selectedLevel, setSelectedLevel] = useState<LessonLevel>('N5');
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,11 +61,11 @@ const AdminDashboard: FC = () => {
 
   const totalDue = lessons.reduce((sum, l) => sum + l.stats.dueCards, 0);
 
-  const groupedLessons: Record<JLPTLevel, LessonWithStats[]> = {
-    N5: [], N4: [], N3: [], N2: [], N1: [],
+  const groupedLessons: Record<LessonLevel, LessonWithStats[]> = {
+    N5: [], N4: [], N3: [], N2: [], N1: [], Kanji: [],
   };
   for (const lesson of lessons) {
-    const lvl = lesson.level as JLPTLevel;
+    const lvl = lesson.level as LessonLevel;
     if (groupedLessons[lvl]) groupedLessons[lvl].push(lesson);
   }
 
@@ -138,7 +138,7 @@ const AdminDashboard: FC = () => {
         <div className="upload-zone-body">
           {/* Level Select */}
           <div className="level-select-group">
-            <label className="level-select-label">JLPT Level</label>
+            <label className="level-select-label">Lesson Section</label>
             <div className="level-select-row">
               {LEVEL_ORDER.map((lvl) => (
                 <button
@@ -167,7 +167,7 @@ const AdminDashboard: FC = () => {
           </button>
           <input ref={fileInputRef} type="file" accept=".csv" onChange={handleImport} className="hidden" />
           <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', textAlign: 'center', marginTop: 8 }}>
-            CSV must have <strong>japanese</strong>, <strong>english</strong>, and optionally <strong>reading</strong> columns
+            CSV must have <strong>japanese</strong> or <strong>kanji</strong>, <strong>english</strong>, and optionally <strong>reading</strong> or <strong>romaji</strong> columns
           </p>
         </div>
       </div>

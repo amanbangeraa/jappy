@@ -70,9 +70,9 @@ async function lessonsHandler(req: Request): Promise<Response> {
       const baseParams: unknown[] = level ? [level] : [];
 
       if (level) {
-        const validLevels = ['N1', 'N2', 'N3', 'N4', 'N5'];
+        const validLevels = ['N1', 'N2', 'N3', 'N4', 'N5', 'Kanji'];
         if (!validLevels.includes(level)) {
-          return sendResponse({ error: 'Invalid JLPT level' }, 400);
+          return sendResponse({ error: 'Invalid lesson level' }, 400);
         }
       }
 
@@ -164,7 +164,7 @@ async function lessonsHandler(req: Request): Promise<Response> {
         return sendResponse({ error: 'Each card requires japanese and english text' }, 400);
       }
 
-      const validLevels = ['N1', 'N2', 'N3', 'N4', 'N5'];
+      const validLevels = ['N1', 'N2', 'N3', 'N4', 'N5', 'Kanji'];
       const actualLevel = validLevels.includes(lessonLevel) ? lessonLevel : 'N5';
 
       // Check for duplicate

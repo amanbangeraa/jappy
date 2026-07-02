@@ -41,12 +41,12 @@ export function parseCSV(file: File): Promise<ParseResult> {
 
         if (!japaneseCol) {
           errors.push(
-            'Missing "japanese" column. Expected columns: japanese, english, reading (optional)'
+            'Missing "japanese" or "kanji" column. Expected columns: japanese/kanji, english, reading/romaji (optional)'
           );
         }
         if (!englishCol) {
           errors.push(
-            'Missing "english" column. Expected columns: japanese, english, reading (optional)'
+            'Missing "english" column. Expected columns: japanese/kanji, english, reading/romaji (optional)'
           );
         }
 

@@ -1,10 +1,11 @@
 export type JLPTLevel = 'N1' | 'N2' | 'N3' | 'N4' | 'N5';
+export type LessonLevel = JLPTLevel | 'Kanji';
 export type UserRole = 'student' | 'admin';
 
 export interface Lesson {
   id?: number;
   name: string;
-  level: JLPTLevel;
+  level: LessonLevel;
   importedAt: number;
 }
 
@@ -99,20 +100,22 @@ export interface RegisterData {
   adminSecret?: string;
 }
 
-export const LEVEL_ORDER: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
+export const LEVEL_ORDER: LessonLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1', 'Kanji'];
 
-export const LEVEL_COLORS: Record<JLPTLevel, string> = {
+export const LEVEL_COLORS: Record<LessonLevel, string> = {
   N5: '#58CC02',
   N4: '#1CB0F6',
   N3: '#FF9600',
   N2: '#CE82FF',
   N1: '#FF4B4B',
+  Kanji: '#7C5CFF',
 };
 
-export const LEVEL_LABELS: Record<JLPTLevel, string> = {
+export const LEVEL_LABELS: Record<LessonLevel, string> = {
   N5: 'N5 — Beginner',
   N4: 'N4 — Basic',
   N3: 'N3 — Intermediate',
   N2: 'N2 — Pre-Advanced',
   N1: 'N1 — Advanced',
+  Kanji: 'Kanji — Characters',
 };
