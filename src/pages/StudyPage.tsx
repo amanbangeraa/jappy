@@ -14,11 +14,13 @@ const StudyPage: FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const lessonParam = searchParams.get('lesson') ?? 'all';
+  const mode = searchParams.get('mode') ?? 'due';
+  const reviewAll = mode === 'all';
   const lessonId = lessonParam === 'all' ? 'all' : Number(lessonParam);
   const homePath = user?.role === 'admin' ? '/admin' : '/student';
 
   const { currentCard, loading, finished, summary, progress, startSession, gradeCard } =
-    useSession(lessonId);
+    useSession(lessonId, reviewAll);
 
   const [flipped, setFlipped] = useState(false);
   const hasNavigated = useRef(false);
@@ -36,11 +38,14 @@ const StudyPage: FC = () => {
     if (finished && summary && !hasNavigated.current) {
       hasNavigated.current = true;
       navigate('/summary', {
-        state: { summary, studyPath: `/study?lesson=${lessonParam}` } as { summary: SummaryData; studyPath: string },
+        state: {
+          summary,
+          studyPath: `/study?lesson=${lessonParam}${reviewAll ? '&mode=all' : ''}`,
+        } as { summary: SummaryData; studyPath: string },
         replace: true,
       });
     }
-  }, [finished, summary, navigate]);
+  }, [finished, summary, navigate, lessonParam, reviewAll]);
 
   const handleGrade = useCallback((key: 'miss' | 'got') => {
     setFlipped(false);
@@ -108,11 +113,20 @@ const StudyPage: FC = () => {
         </div>
         <h2 className="heading-md" style={{ marginBottom: 8 }}>Nothing due today</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 15, fontWeight: 600, marginBottom: 28 }}>
-          You're all caught up!
+          You're all caught up!{!reviewAll ? ' You can still review again anytime.' : ''}
         </p>
-        <button className="btn btn-green" onClick={() => navigate(homePath)}>
-          <Icon name="home" size={16} /> Go home
-        </button>
+        {!reviewAll ? (
+          <button
+            className="btn btn-green"
+            onClick={() => navigate(`/study?lesson=${lessonParam}&mode=all`, { replace: true })}
+          >
+            <Icon name="play" size={16} /> Review again
+          </button>
+        ) : (
+          <button className="btn btn-green" onClick={() => navigate(homePath)}>
+            <Icon name="home" size={16} /> Go home
+          </button>
+        )}
       </div>
     );
   }

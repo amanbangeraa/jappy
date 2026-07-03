@@ -72,12 +72,12 @@ const LessonPage: FC = () => {
             </p>
           </div>
           <div className="lesson-header-actions">
-            {lesson && hasDue && (
+            {lesson && (
               <button
                 className="btn btn-green btn-sm"
-                onClick={() => navigate(`/study?lesson=${lessonId}`)}
+                onClick={() => navigate(`/study?lesson=${lessonId}${hasDue ? '' : '&mode=all'}`)}
               >
-                <Icon name="play" size={14} color="#fff" /> Study now
+                <Icon name="play" size={14} color="#fff" /> {hasDue ? 'Study now' : 'Review again'}
               </button>
             )}
             {lesson && (
@@ -119,7 +119,7 @@ const LessonPage: FC = () => {
           </div>
           <h2 className="heading-md">Nothing due today</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: 14, fontWeight: 600 }}>
-            Come back tomorrow for more reviews!
+            Come back tomorrow for scheduled reviews, or review this lesson again now.
           </p>
         </div>
       )}

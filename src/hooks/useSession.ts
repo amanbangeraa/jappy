@@ -1,9 +1,19 @@
 import { useState, useCallback, useRef } from 'react';
-import { fetchDueCards, fetchLessons, submitGrade, type DueCard } from '../api/client';
+import { fetchDueCards, fetchLessons, fetchCards, submitGrade, type DueCard, type CardWithReview } from '../api/client';
 import { updateReview, QUALITY_MAP } from '../algorithms/sm2';
 import type { Grade, ReviewRecord, SessionResult, SummaryData } from '../types';
 
-export function useSession(lessonId: number | 'all') {
+function toDueCard(card: CardWithReview): DueCard {
+  return {
+    ...card,
+    dueDate: card.review?.dueDate ?? 0,
+    interval: card.review?.interval ?? 1,
+    easeFactor: card.review?.easeFactor ?? 2.0,
+    repetitions: card.review?.repetitions ?? 0,
+  };
+}
+
+export function useSession(lessonId: number | 'all', reviewAll = false) {
   const [queue, setQueue] = useState<DueCard[]>([]);
   const [index, setIndex] = useState(0);
   const queueRef = useRef<DueCard[]>([]);
@@ -54,14 +64,18 @@ export function useSession(lessonId: number | 'all') {
         const allLessons = await fetchLessons();
         const dueCards: DueCard[] = [];
         for (const lesson of allLessons) {
-          const cards = await fetchDueCards(lesson.id!);
+          const cards = reviewAll
+            ? (await fetchCards(lesson.id!)).map(toDueCard)
+            : await fetchDueCards(lesson.id!);
           for (const card of cards) {
             dueCards.push(card);
           }
         }
         setSessionQueue(shuffle(dueCards));
       } else {
-        const cards = await fetchDueCards(lessonId);
+        const cards = reviewAll
+          ? (await fetchCards(lessonId)).map(toDueCard)
+          : await fetchDueCards(lessonId);
         setSessionQueue(shuffle(cards));
       }
     } catch (err) {
@@ -70,7 +84,7 @@ export function useSession(lessonId: number | 'all') {
     } finally {
       setLoading(false);
     }
-  }, [lessonId, setSessionIndex, setSessionQueue]);
+  }, [lessonId, reviewAll, setSessionIndex, setSessionQueue]);
 
   const buildSummary = useCallback(() => {
     const results = resultsRef.current;

@@ -116,12 +116,12 @@ const StudentDashboard: FC = () => {
             <p className="student-dashboard-copy">{dueMessage}</p>
             <button
               className="btn btn-green student-study-all-cta"
-              onClick={() => navigate('/study?lesson=all')}
-              disabled={loading || totalDue === 0}
+              onClick={() => navigate(totalDue > 0 ? '/study?lesson=all' : '/study?lesson=all&mode=all')}
+              disabled={loading}
             >
               <Icon name="play" size={18} color="#fff" />
-              Study All
-              <span className="student-study-all-count">{totalDue}</span>
+              {totalDue > 0 ? 'Study All' : 'Review All'}
+              <span className="student-study-all-count">{totalDue > 0 ? totalDue : lessons.length}</span>
             </button>
           </section>
 
