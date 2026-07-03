@@ -1,0 +1,26 @@
+lesson_id,lesson_name,level,total_cards,file_name
+2,Test Vocabulary,N5,2,lesson-2-test-vocabulary.csv
+4,Test Lesson,N5,1,lesson-4-test-lesson.csv
+6,gemini-code-1781499238453,N5,46,lesson-6-gemini-code-1781499238453.csv
+7,n4-l26,N4,46,lesson-7-n4-l26.csv
+9,n4-l27,N4,50,lesson-9-n4-l27.csv
+10,n4-l28,N4,52,lesson-10-n4-l28.csv
+11,n4-l29,N4,52,lesson-11-n4-l29.csv
+12,n4-l30,N4,53,lesson-12-n4-l30.csv
+13,n4-l31,N4,45,lesson-13-n4-l31.csv
+14,n4-l32,N4,70,lesson-14-n4-l32.csv
+15,n5-l12,N5,50,lesson-15-n5-l12.csv
+16,n5-l13,N5,50,lesson-16-n5-l13.csv
+17,n5-l16,N5,51,lesson-17-n5-l16.csv
+18,n5-l19,N5,34,lesson-18-n5-l19.csv
+19,n5-l21,N5,48,lesson-19-n5-l21.csv
+20,n5-l23,N5,45,lesson-20-n5-l23.csv
+21,KanjiList,N3,156,lesson-21-kanjilist.csv
+22,KanjiList1,Kanji,156,lesson-22-kanjilist1.csv
+23,KanjiList01,Kanji,19,lesson-23-kanjilist01.csv
+24,KanjiList2,Kanji,19,lesson-24-kanjilist2.csv
+25,KanjiList3,Kanji,19,lesson-25-kanjilist3.csv
+26,KanjiList4,Kanji,19,lesson-26-kanjilist4.csv
+27,KanjiList5,Kanji,19,lesson-27-kanjilist5.csv
+28,KanjiList6,Kanji,42,lesson-28-kanjilist6.csv
+29,KanjiList7,Kanji,106,lesson-29-kanjilist7.csv

@@ -1,0 +1,50 @@
+{
+  "exportedAt": 1783039718690,
+  "outputDir": "/workspaces/jappy/exports/db-export-20260703-004833",
+  "tables": [
+    {
+      "table": "users",
+      "rows": 5,
+      "file": "exports/db-export-20260703-004833/users.csv"
+    },
+    {
+      "table": "sessions",
+      "rows": 8,
+      "file": "exports/db-export-20260703-004833/sessions.csv"
+    },
+    {
+      "table": "lessons",
+      "rows": 25,
+      "file": "exports/db-export-20260703-004833/lessons.csv"
+    },
+    {
+      "table": "cards",
+      "rows": 1250,
+      "file": "exports/db-export-20260703-004833/cards.csv"
+    },
+    {
+      "table": "review_records",
+      "rows": 687,
+      "file": "exports/db-export-20260703-004833/review_records.csv"
+    },
+    {
+      "table": "session_logs",
+      "rows": 2728,
+      "file": "exports/db-export-20260703-004833/session_logs.csv"
+    },
+    {
+      "table": "card_reviews",
+      "rows": 0,
+      "file": "exports/db-export-20260703-004833/card_reviews.csv"
+    },
+    {
+      "table": "daily_stats",
+      "rows": 0,
+      "file": "exports/db-export-20260703-004833/daily_stats.csv"
+    }
+  ],
+  "lessonImportFiles": {
+    "lessonCount": 25,
+    "outputDir": "/workspaces/jappy/exports/db-export-20260703-004833/lesson-import-files"
+  }
+}

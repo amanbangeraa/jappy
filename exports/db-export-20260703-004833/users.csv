@@ -1,0 +1,6 @@
+id,username,email,password_hash,role,created_at
+1,atharv,atharvbangera2005@gmail.com,$2b$10$rqm.KcYjvsYM7PTMz6QBDevLE27qfJfmCxuVt34Piml3U7opIVEx2,student,1750000000000
+2,aman,aman.bangeraa@gmail.com,$2b$10$ES2voHfZqadl5yk/BQmHiOyX2oS9armxWInmzO.rFGYB3yEzhkbqS,admin,1718841600000
+3,Aman,aman@gmail.com,$2b$10$fN9zu4avw/nD1EnGS26RjOHwQn2d9w48d/ZA79aDiyE14qRQieJqW,student,1782218344797
+4,Suhani R M,suhanirm38@gmail.com,$2b$10$T87rkuFBOdjB7SXBjz0ft.q0nFSqPGVEYaAwsXwKJjT0yzmq4ijnS,student,1782233191710
+5,Hamsini,hamsinishetty027@gmail.com,$2b$10$oTDpTUdmt6E9dl8yXvAiAeBquf07YCsZcbHtRDThgj2m9q7wa5Shi,student,1782287749798

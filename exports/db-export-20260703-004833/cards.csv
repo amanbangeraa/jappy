@@ -1,0 +1,1251 @@
+id,lesson_id,japanese,english,reading
+4,2,食べる,to eat,たべる
+5,2,水,water,みず
+8,4,猫,cat,ねこ
+10,6,みます,check / take a look at,mimasu
+11,6,さがします,look for / search for,sagashimasu
+12,6,[じかんに~] おくれます,be late [for an appointment/time],okuremasu
+13,6,[じかんに~] まにあいます,be in time [for an appointment/time],mani aimasu
+14,6,やります,do,yarimasu
+15,6,ひろいます,pick up,hiroimasu
+16,6,れんらくします,contact / get in touch with,renrakushimasu
+17,6,[にもつが~] かたづきます,[boxes/room] be put in order / tidied up,katazukimasu
+18,6,[ごみを~] だします,put out [the garbage],dashimasu
+19,6,[ごみが~] もえます,[garbage] burn,moemasu
+20,6,つごうがいい,convenient (regarding time),tsugō ga ii
+21,6,つごうがわるい,inconvenient (regarding time),tsugō ga warui
+22,6,きぶんがいい,feel well / in a good mood,kibun ga ii
+23,6,きぶんがわるい,feel ill / feel sick,kibun ga warui
+24,6,こわい,scary / be afraid of,kowai
+25,6,しんぶんしゃ,newspaper publishing company,shinbunsha
+26,6,じゅうどう,judo,jūdō
+27,6,うんどうかい,athletic meeting / sports day,undōkai
+28,6,ばしょ,place / location,basho
+29,6,ボランティア,volunteer,borantia
+30,6,～べん,... dialect,~ben
+31,6,ごみ,garbage / rubbish / waste,gomi
+32,6,おきば,place where something is kept/put,okiba
+33,6,よこ,side / next to,yoko
+34,6,びん,bottle,bin
+35,6,かん,can,kan
+36,6,おゆ,hot water,oyu
+37,6,ガス,gas,gas
+38,6,かいしゃ,company,kaisha
+39,6,うちゅう,space / universe,uchū
+40,6,うちゅうせん,spaceship,uchūsen
+41,6,うちゅうひこうし,astronaut,uchūhikōshi
+42,6,さいふ,wallet / purse,saifu
+43,6,こっかいぎじどう,the Diet Building (Parliament),kokkai gijidō
+44,6,へいじつ,weekday,heijitsu
+45,6,こんど,next time / another time,kondo
+46,6,ずいぶん,very / pretty / considerably,zuibun
+47,6,ちょくせつ,directly,chokutsu
+48,6,いつでも,anytime,itsudemo
+49,6,どこでも,anywhere,dokodemo
+50,6,だれでも,anybody,daredemo
+51,6,なんでも,anything,nandemo
+52,6,こんな～,like this / this kind of...,konna ~
+53,6,そんな～,like that / that kind of...,sonna ~
+54,6,あんな～,like that / that kind of...,anna ~
+55,6,こまったなあ,What shall I do? / I'm in trouble.,komatta nā
+56,7,みます,check / take a look at,mimasu
+57,7,さがします,look for / search for,sagashimasu
+58,7,[じかんに~] おくれます,be late [for an appointment/time],okuremasu
+59,7,[じかんに~] まにあいます,be in time [for an appointment/time],mani aimasu
+60,7,やります,do,yarimasu
+61,7,ひろいます,pick up,hiroimasu
+62,7,れんらくします,contact / get in touch with,renrakushimasu
+63,7,[にもつが~] かたづきます,[boxes/room] be put in order / tidied up,katazukimasu
+64,7,[ごみを~] だします,put out [the garbage],dashimasu
+65,7,[ごみが~] もえます,[garbage] burn,moemasu
+66,7,つごうがいい,convenient (regarding time),tsugō ga ii
+67,7,つごうがわるい,inconvenient (regarding time),tsugō ga warui
+68,7,きぶんがいい,feel well / in a good mood,kibun ga ii
+69,7,きぶんがわるい,feel ill / feel sick,kibun ga warui
+70,7,こわい,scary / be afraid of,kowai
+71,7,しんぶんしゃ,newspaper publishing company,shinbunsha
+72,7,じゅうどう,judo,jūdō
+73,7,うんどうかい,athletic meeting / sports day,undōkai
+74,7,ばしょ,place / location,basho
+75,7,ボランティア,volunteer,borantia
+76,7,～べん,... dialect,~ben
+77,7,ごみ,garbage / rubbish / waste,gomi
+78,7,おきば,place where something is kept/put,okiba
+79,7,よこ,side / next to,yoko
+80,7,びん,bottle,bin
+81,7,かん,can,kan
+82,7,おゆ,hot water,oyu
+83,7,ガス,gas,gas
+84,7,かいしゃ,company,kaisha
+85,7,うちゅう,space / universe,uchū
+86,7,うちゅうせん,spaceship,uchūsen
+87,7,うちゅうひこうし,astronaut,uchūhikōshi
+88,7,さいふ,wallet / purse,saifu
+89,7,こっかいぎじどう,the Diet Building (Parliament),kokkai gijidō
+90,7,へいじつ,weekday,heijitsu
+91,7,こんど,next time / another time,kondo
+92,7,ずいぶん,very / pretty / considerably,zuibun
+93,7,ちょくせつ,directly,chokutsu
+94,7,いつでも,anytime,itsudemo
+95,7,どこでも,anywhere,dokodemo
+96,7,だれでも,anybody,daredemo
+97,7,なんでも,anything,nandemo
+98,7,こんな～,like this / this kind of...,konna ~
+99,7,そんな～,like that / that kind of...,sonna ~
+100,7,あんな～,like that / that kind of...,anna ~
+101,7,こまったなあ,What shall I do? / I'm in trouble.,komatta nā
+102,9,かえます,can buy / be able to buy,kaemasu
+103,9,かいます,keep (an animal) / raise,kaimasu
+104,9,[みちを~] はしります,run / drive [along a road],[michi o~] hashirimasu
+105,9,みえます,can be seen,miemasu
+106,9,[やまが~] みえます,[a mountain] can be seen,[yama ga~] miemasu
+107,9,きこえます,can be heard,kikoemasu
+108,9,[おとが~] きこえます,[a sound] can be heard,[oto ga~] kikoemasu
+109,9,できます,be made / be completed / come into being,dekimasu
+110,9,[くうこうが~] できます,[an airport] be made / completed,[kūkō ga~] dekimasu
+111,9,ひらきます,set up [a class] / open / hold,hirakimasu
+112,9,[きょうしつを~] ひらきます,set up [a class] / open / hold,[kyōshitsu o~] hirakimasu
+113,9,ペット,pet,petto
+114,9,とり,bird,tori
+115,9,こえ,voice,koe
+116,9,なみ,wave,nami
+117,9,はなび,fireworks,hanabi
+118,9,けしき,scenery / view,keshiki
+119,9,ひるま,daytime,hiruma
+120,9,むかし,old days / ancient times,mukashi
+121,9,どうぐ,tool / instrument / equipment,dōgu
+122,9,クリーニング,cleaning / dry cleaning,kurīningu
+123,9,いえ,house / home,ie
+124,9,マンション,mansion / apartment house / condominium,manshon
+125,9,キッチン,kitchen,kicchin
+126,9,~きょうしつ,~ class,~kyōshitsu
+127,9,パーティールーム,party room,pātīrūmu
+128,9,かた,person (respectful equivalent of ひと),kata
+129,9,~ご,after ~ (duration of time),~go
+130,9,~しか,only ~ (used with negatives),~shika
+131,9,ほかの,other,hokanodesu
+132,9,はっきり,clearly,hakkiri
+133,9,ほとんど,almost all / hardly (with negative),hotondo
+134,9,かぐ,furniture,kagu
+135,9,ほんだな,bookshelf,hondana
+136,9,いつか,sometime / someday,itsuka
+137,9,たてます,build,tatemasu
+138,9,すばらしい,wonderful / gorgeous,subarashii
+139,9,こどもたち,children,kodomotachi
+140,9,だいすき[な],favorite / very fond of,daisuki[na]
+141,9,しゅんこう,hero of a story/novel,shunkō
+142,9,かたち,shape,katachi
+143,9,ふしぎ[な],fantastic / mysterious / strange,fushigi[na]
+144,9,ポケット,pocket,poketto
+145,9,たとえば,for example,tatoeba
+146,9,つけます,attach / put on,tsukemasu
+147,9,じゆうに,freely,jiyūni
+148,9,そら,sky,sora
+149,9,とびます,fly,tobimasu
+150,9,じぶん,oneself,jibun
+151,9,しょうらい,future,shōrai
+152,10,うれます,sell / be sold,uremasu
+153,10,[パンが~] うれます,[bread] sell / be sold,[pan ga~] uれます
+154,10,おどります,dance,odorimasu
+155,10,かみます,chew / bite,kamimasu
+156,10,えらびます,choose / select,erabimasu
+157,10,ちがいます,be different,chigaimasu
+158,10,かよいます,go to and from / commute,kayoimasu
+159,10,[だいがくに~] かよいます,commute to [university],[daigaku ni~] kayoimasu
+160,10,メモします,take a memo / note down,memoshimasu
+161,10,まじめ[な],serious / earnest / honest,majime[na]
+162,10,ねっしん[な],earnest / enthusiastic,nesshin[na]
+163,10,やさしい,gentle / kind,yasashii
+164,10,えらい,great / admirable,erai
+165,10,ちょうどいい,proper / just right,chōdo ii
+166,10,しゅうかん,custom / habit,shūkan
+167,10,けいけん,experience,keiken
+168,10,ちから,power / strength / ability,chikara
+169,10,にんき,popularity,ninki
+170,10,[がくせいに~] にんきがあります,be popular [with students],[gakusei ni~] ninki ga arimasu
+171,10,かたち,shape / form,katachi
+172,10,いろ,color,iro
+173,10,あじ,taste / flavor,aji
+174,10,ガム,chewing gum,gamu
+175,10,しなもの,goods / article,shinamono
+176,10,ねだん,price,nedan
+177,10,きゅうりょう,salary,kyūryō
+178,10,ボーナス,bonus,bōnasu
+179,10,ばんぐみ,program (e.g. TV program),bangumi
+180,10,ドラマ,drama / TV show,dorama
+181,10,かしゅ,singer,kashu
+182,10,しょうせつ,novel,shōsetsu
+183,10,しょうせつか,novelist,shōsetsuka
+184,10,かんりにん,janitor / caretaker / manager,kanrinin
+185,10,むすこ,(my) son,musuko
+186,10,むすこさん,(someone else's) son,musukosan
+187,10,むすめ,(my) daughter,musume
+188,10,むすめさん,(someone else's) daughter,musumesan
+189,10,じぶん,oneself,jibun
+190,10,しょうらい,future,shōrai
+191,10,しばらく,a little while / for a short while,shibaraku
+192,10,たいてい,usually / mostly,taitei
+193,10,それに,in addition / moreover,soreni
+194,10,それで,and so / therefore,sorede
+195,10,おねがいがあるんですが,I have a favor to ask.,onegai ga aru n desu ga
+196,10,ホームステイ,homestay,hōmustei
+197,10,かいわ,conversation,kaiwa
+198,10,おしゃべりします,chat / talk,oshaberishimasu
+199,10,おしらせ,notice / announcement,oshirase
+200,10,ひにち,date,hinichi
+201,10,どようび,Saturday,doyōbi
+202,10,たいいくかん,gymnasium,taiikukan
+203,10,むりょう,free of charge,muryō
+204,11,[ドアが~] あきます,[a door] open,[doa ga~] akimasu
+205,11,[ドアが~] しまります,[a door] close / shut,[doa ga~] shimarimasu
+206,11,[でんきが~] つきます,[a light] come on / be turned on,[denki ga~] tsukimasu
+207,11,[でんきが~] きえます,[a light] go off / disappear,[denki ga~] kiemasu
+208,11,[いすが~] こわれます,[a chair] break,[isu ga~] kowaremasu
+209,11,[コップが~] われます,[a glass] break / smash,[koppu ga~] waremasu
+210,11,[きが~] おれます,[a tree] break / snap,[ki ga~] oremasu
+211,11,[かみが~] やぶれます,[paper] tear,[kami ga~] yaburemasu
+212,11,[ふくが~] よごれます,[clothes] get dirty,[fuku ga~] yogoremasu
+213,11,[ポケットが~] つきます,[a pocket] be attached,[poketto ga~] tsukimasu
+214,11,[ボタンが~] はずれます,[a button] come off / be undone,[botan ga~] hazuremasu
+215,11,[くるまが~] とまります,[a car] stop / park,[kuruma ga~] tomarimasu
+216,11,まちがえます,make a mistake,machigaemasu
+217,11,おとします,drop / lose,otoshimasu
+218,11,[かぎが~] かかります,be locked,[kagi ga~] kakarimasu
+219,11,ふきます,wipe,fukimasu
+220,11,とりかえます,change,torikaemasu
+221,11,かたづけます,put (things) in order / tidy up,katazukimasu
+222,11,おさら,plate / dish,osara
+223,11,おちゃわん,rice bowl,ochawan
+224,11,コップ,glass (vessel),koppu
+225,11,ガラス,glass (material),garasu
+226,11,ふくろ,bag,fukuro
+227,11,さいふ,wallet / purse,saifu
+228,11,しょるい,document / papers,shorui
+229,11,えだ,branch / twig,eda
+230,11,えきいん,station employee / attendant,ekiin
+231,11,こうばん,police box,kōban
+232,11,スピーチ,speech,supīchi
+233,11,へんじ,reply / answer,henji
+234,11,おさきにどうぞ,after you / go ahead please,osaki ni dōzo
+235,11,いまのでんしゃ,the train which has just left,ima no densha
+236,11,わすれもの,things left behind / lost property,wasuremono
+237,11,このくらい,about this size,kono kurai
+238,11,~がわ,~ side,~gawa
+239,11,ポケット,pocket,poketto
+240,11,~へん,"around ~, ~ about",~hen
+241,11,このへん,this neighborhood / around here,kono hen
+242,11,おぼえていません,I don't remember,oboete imasen
+243,11,あみだな,overhead rack,amidana
+244,11,たしか,I'm pretty sure / if I am correct,tashika
+245,11,ああ、よかった,thank goodness / that's great,ā yokatta
+246,11,じしん,earthquake,jishin
+247,11,かべ,wall,kabe
+248,11,はり,hands (of a clock),hari
+249,11,さします,point,sashimasu
+250,11,えきまえ,the area in front of a station,ekimae
+251,11,たおれます,fall down,taoremasu
+252,11,にし,west,nishi
+253,11,~のほう,direction of ~,~ no hō
+254,11,もえます,burn,moemasu
+255,11,レポーター,reporter,repōtā
+256,12,はります,put up / post / paste,harimasu
+257,12,かけます,hang,kakemasu
+258,12,[カレンダーを~] かけます,hang [a calendar],[karenda- o~] kakemasu
+259,12,かざります,display / decorate,kazarimasu
+260,12,ならべます,arrange / line up,narabemasu
+261,12,うえます,plant,uemasu
+262,12,もどします,return / put back,modoshimasu
+263,12,まとめます,put together / summarize,matomemasu
+264,12,かたづけます,put things in order / tidy up,katazukimasu
+265,12,しまいます,put away,shimaimasu
+266,12,きめます,decide,kimemasu
+267,12,しらせます,inform / notify,shirasemasu
+268,12,そうだんします,consult / discuss,sōdanshimasu
+269,12,よしゅうします,prepare for a lesson,yoshūshimasu
+270,12,ふくしゅうします,review a lesson,fukushūshimasu
+271,12,そのままにします,leave things as they are,sonomama ni shimasu
+272,12,おこさん,(someone else's) child,okosan
+273,12,じゅぎょう,class / lesson,jugyō
+274,12,こうぎ,lecture,kōgi
+275,12,ミーティング,meeting,mītingu
+276,12,よてい,plan / schedule,yotei
+277,12,おしらせ,notice / announcement,oshirase
+278,12,あんないしょ,guidebook / guide brochure,annaisho
+279,12,カレンダー,calendar,karendā
+280,12,ポスター,poster,posutā
+281,12,ごみばこ,trash can / dustbin,gomibako
+282,12,にんぎょう,doll,ningyō
+283,12,かびん,vase,kabin
+284,12,かがみ,mirror,kagami
+285,12,ひきだし,drawer,hikidashi
+286,12,げんかん,entrance hall / foyer,genkan
+287,12,ろうか,corridor / hallway,rōka
+288,12,かべ,wall,kabe
+289,12,いけ,pond,ike
+290,12,こうばん,police box,kōban
+291,12,もとのところ,original place,moto no tokoro
+292,12,まわり,around / surrounding,mawari
+293,12,まんなか,center / middle,mannaka
+294,12,すみ,corner,sumi
+295,12,まだ,still,mada
+296,12,ほど,about / approximately,hodo
+297,12,よていひょう,schedule / itinerary,yoteihyō
+298,12,ごくろうさま,Thank you for your hard work (used by superiors),gokurōsama
+299,12,きぼう,hope / desire / wish,kibō
+300,12,ミュージカル,musical,myūjikaru
+301,12,それはいいですね,That's a good idea / That sounds nice,sore wa ii desu ne
+302,12,まるい,round / circular,marui
+303,12,ある~,a certain ~ / some ~,aru~
+304,12,ちきゅう,earth / planet earth,chikyū
+305,12,うれしい,happy / glad,ureshishi
+306,12,いや[な],hateful / disagreeable / unpleasant,iya[na]
+307,12,すると,then / and just then,suruto
+308,12,めがさめます,wake up,me ga samemasu
+309,13,はじまります,begin / start,hajimerimasu
+310,13,[しきが~] はじまります,[a ceremony] begin / start,[shiki ga~] hajimerimasu
+311,13,つづけます,continue,tsuzukemasu
+312,13,みつけます,find,mitsukemasu
+313,13,うけます,take [an examination],ukemasu
+314,13,[しけんを~] うけます,take [an examination],[shiken o~] ukemasu
+315,13,にゅうがくします,enter [a university],nyūgakushimasu
+316,13,[だいがくに~] にゅうがくします,enter [a university],[daigaku ni~] nyūgakushimasu
+317,13,そつぎょうします,graduate [from a university],sotsugyōshimasu
+318,13,[だいがくを~] そつぎょうします,graduate [from a university],[daigaku o~] sotsugyōshimasu
+319,13,しゅっせきします,attend [a meeting],shussekishimasu
+320,13,[かいぎに~] しゅっせきします,attend [a meeting],[kaigi ni~] shussekishimasu
+321,13,きゅうけいします,take a break / take a rest,kyūkeishimasu
+322,13,れんきゅう,consecutive holidays,renkyū
+323,13,さくぶん,essay / composition,sakubun
+324,13,てんらんかい,exhibition,tenrankai
+325,13,けっこんしき,wedding ceremony,kekkonshiki
+326,13,[お]そうしき,funeral,[o]sōshiki
+327,13,しき,ceremony,shiki
+328,13,ほんしゃ,head office,honsha
+329,13,してん,branch office,shiten
+330,13,きょうかい,church,kyōkai
+331,13,だいがくいん,graduate school,daigakuin
+332,13,どうぶつえん,zoo,dōbu tsuen
+333,13,おんせん,hot spring / spa,onsen
+334,13,おきゃく[さん],visitor / guest / customer / client,okyaku[san]
+335,13,だれか,somebody,dareka
+336,13,~のほう,place toward ~ / direction of ~,~ no hō
+337,13,ずっと,all the time / much more,zutto
+338,13,のこります,remain / be left behind,nokorimasu
+339,13,つきに,per month / in a month,tsuki ni
+340,13,ふつうの,ordinary / regular,futsū no
+341,13,インターネット,Internet,intānetto
+342,13,むら,village,mura
+343,13,えいがかん,movie theater,eigakan
+344,13,とじます,close / shut,tojimasu
+345,13,とかい,city / town,tokai
+346,13,こどもたち,children,kodomotachi
+347,13,じゆうに,freely,jiyūni
+348,13,せかいじゅう,all over the world,sekaijū
+349,13,あつまります,gather / assemble,atsumarimasu
+350,13,うつくしい,beautiful,utsukushii
+351,13,しぜん,nature,shizen
+352,13,すばらしさ,goodness / splendor,subarashisa
+353,13,きがつきます,notice / become aware of,ki ga tsukimasu
+354,14,うんどうします,take exercise,undōshimasu
+355,14,せいこうします,succeed,seikōshimasu
+356,14,しっぱいします,fail [an examination],shippaishimasu
+357,14,[しけんに~] しっぱいします,fail [an examination],[shiken ni~] shippaishimasu
+358,14,ごうかくします,pass [an examination],gōkakushimasu
+359,14,[しけんに~] ごうかくします,pass [an examination],[shiken ni~] gōkakushimasu
+360,14,もどります,return,modorimasu
+361,14,やみます,stop [rain],yamimasu
+362,14,[あめが~] やみます,stop [rain],[ame ga~] yamimasu
+363,14,はれます,clear up,haremasu
+364,14,くもります,get cloudy,kumorimasu
+365,14,ふきます,blow [wind],fukimasu
+366,14,[かぜが~] ふきます,blow [wind],[kaze ga~] fukimasu
+367,14,なおります,recover from [an illness] / be repaired,naorimasu
+368,14,[びょうきが~] なおります,recover from [an illness],[byōki ga~] naorimasu
+369,14,[こしょうが~] なおります,be repaired [a breakdown],[koshō ga~] naorimasu
+370,14,つづきます,continue [a fever],tsuzukimasu
+371,14,[ねつが~] つづきます,continue [a fever],[netsu ga~] tsuzukimasu
+372,14,ひきます,catch [a cold],hikimasu
+373,14,[かぜを~] ひきます,catch [a cold],[kaze o~] hikimasu
+374,14,ひやします,cool,hiyashimasu
+375,14,しんぱい[な],worried / anxious,shinpai[na]
+376,14,じゅうぶん[な],enough / sufficient,jūbun[na]
+377,14,おかしい,strange / funny,okashii
+378,14,うるさい,noisy,urusai
+379,14,やけど,burn / scalding,yakedo
+380,14,[やけどを~] します,get a burn,[yakedo o~] shimasu
+381,14,けが,injury,kega
+382,14,[けがを~] します,get an injury,[kega o~] shimasu
+383,14,せき,cough,seki
+384,14,[せきが~] でます,have a cough,[seki ga~] demasu
+385,14,インフルエンザ,influenza,infuruenza
+386,14,そら,sky,sora
+387,14,たいよう,sun,taiyō
+388,14,ほし,star,hoshi
+389,14,つき,moon,tsuki
+390,14,かぜ,wind,kaze
+391,14,きた,north,kita
+392,14,みなみ,south,minami
+393,14,にし,west,nishi
+394,14,ひがし,east,higashi
+395,14,すいどう,water supply / tap water,suidō
+396,14,エンジン,engine,enjin
+397,14,チーム,team,chīmu
+398,14,こんや,this evening / tonight,konya
+399,14,ゆうがた,late afternoon / evening,yūgata
+400,14,まえ,before / formerly,mae
+401,14,おそく,late (time),osoku
+402,14,こんなに,like this,konnani
+403,14,そんなに,like that (concerning the listener),sonnani
+404,14,あんなに,like that (concerning something far away),annani
+405,14,もしかしたら,possibly / perhaps,moshikashitara
+406,14,それはいけませんね,That's too bad,sore wa ikemasen ne
+407,14,オリンピック,Olympic Games,orinpikku
+408,14,げんき,health / vigor,genki
+409,14,い,stomach,i
+410,14,はたらきすぎ,working too much / overwork,hatarakisugi
+411,14,ストレス,stress,sutoresu
+412,14,むりをします,work more than one's capacity,muri o shimasu
+413,14,ゆっくりします,take one's time / relax,yukkuri shimasu
+414,14,ほしうらない,horoscope / astrology,hoshiuranai
+415,14,おうしざ,Taurus (the Bull),ōshiza
+416,14,こまります,be in trouble / have a problem,komarimasu
+417,14,たからくじ,lottery,takarakuji
+418,14,あたります,win [a lottery],atarimasu
+419,14,[たからくじが~] あたります,win [a lottery],[takarakuji ga~] atarimasu
+420,14,けんこう,health,kenkō
+421,14,れんあい,romantic love,renai
+422,14,こいびと,boyfriend / girlfriend,koibito
+423,14,おかねもち,rich person,okanemochi
+424,15,かんたん[な],easy / simple,kantan[na]
+425,15,ちかい,near / close,chikai
+426,15,とおい,far,tooi
+427,15,はやい,fast / early,hayai
+428,15,おそい,slow / late,osoi
+429,15,おおい,many / much,ooi
+430,15,[ひとが~] おおい,many [people],[hito ga~] ooi
+431,15,すくない,few / a little,sukunai
+432,15,[ひとが~] すくない,few [people],[hito ga~] sukunai
+433,15,あたたかい,warm,atatakai
+434,15,すずしい,cool,suzushii
+435,15,あまい,sweet,amai
+436,15,からい,spicy / hot,karai
+437,15,おもい,heavy,omoi
+438,15,かるい,light,karui
+439,15,いい,prefer,ii
+440,15,[コーヒーが~] いい,prefer [coffee],[kōhī ga~] ii
+441,15,きせつ,season,kisetsu
+442,15,はる,spring,haru
+443,15,なつ,summer,natsu
+444,15,あき,autumn / fall,aki
+445,15,ふゆ,winter,fuyu
+446,15,てんき,weather,tenki
+447,15,あめ,rain,ame
+448,15,ゆき,snow,yuki
+449,15,くもり,cloudy,kumori
+450,15,ホテル,hotel,hoteru
+451,15,くうこう,airport,kūkō
+452,15,うみ,sea / ocean,umi
+453,15,せかい,world,sekai
+454,15,パーティー,party,pātī
+455,15,[お]まつり,festival,[o]matsuri
+456,15,しけん,examination / exam,shiken
+457,15,すきやき,sukiyaki (beef and vegetable hot pot),sukiyaki
+458,15,さしみ,sashimi (sliced raw fish),sashimi
+459,15,[お]すし,sushi,[o]sushi
+460,15,てんぷら,tempura,tenpura
+461,15,いけばな,flower arrangement,ikebana
+462,15,[を~] します,practice flower arrangement,[o~] shimasu
+463,15,もみじ,maple / red autumn leaves,momiji
+464,15,どちら,which (of two choices),dochira
+465,15,どちらも,both,dochiramo
+466,15,ずっと,by far / much more,zutto
+467,15,はじめて,for the first time,hajimete
+468,15,ただいま,I'm home.,tadaima
+469,15,おかえりなさい,Welcome home.,okaerinasai
+470,15,すごいですね,That's amazing.,sugoi desu ne
+471,15,でも,but,demo
+472,15,つかれました,I'm tired.,tsukaremashita
+473,15,ぎおんまつり,Gion Festival,gionmatsuri
+474,16,あそびます,play / visit someone / have fun,asobimasu
+475,16,およぎます,swim,oyogimasu
+476,16,むかえます,go to meet / welcome,mukaemasu
+477,16,つかれます,get tired,tsukaremasu
+478,16,だします,send [a letter],dashimasu
+479,16,[てがみを~] だします,send [a letter],[tegami o~] dashimasu
+480,16,はいります,enter [a coffee shop],hairimasu
+481,16,[きっさてんに~] はいります,enter [a coffee shop],[kissaten ni~] hairimasu
+482,16,でます,go out [of a coffee shop],demasu
+483,16,[きっさてんを~] でます,go out [of a coffee shop],[kissaten o~] demasu
+484,16,けっこんします,marry / get married,kekkonshimasu
+485,16,かいものします,do shopping,kaimonoshimasu
+486,16,しょくじします,have a meal / dine,shokujishimasu
+487,16,さんぽします,take a walk [in a park],sanposhimasu
+488,16,[こうえんを~] さんぽします,take a walk [in a park],[kōen o~] sanposhimasu
+489,16,たいへん[な],hard / tough / severe / awful,taihen[na]
+490,16,ほしい,want (something),hoshii
+491,16,さびしい,lonely,sabishii
+492,16,ひろい,wide / spacious,hiroi
+493,16,せまい,narrow / small (room etc.),semai
+494,16,しやくしょ,city hall,shiyakusho
+495,16,プール,swimming pool,pūru
+496,16,かわ,river,kawa
+497,16,けいざい,economy / economics,keizai
+498,16,びじゅつ,fine art,bijutsu
+499,16,つり,fishing,tsuri
+500,16,[を~] します,fish / go fishing,[o~] shimasu
+501,16,スキー,skiing,sukī
+502,16,[を~] します,ski / go skiing,[o~] shimasu
+503,16,かいぎ,meeting / conference,kaigi
+504,16,[を~] します,hold a meeting,[o~] shimasu
+505,16,とうろく,registration,tōroku
+506,16,[を~] します,register,[o~] shimasu
+507,16,しゅうちょう,business trip,shūchō
+508,16,[を~] します,go on a business trip,[o~] shimasu
+509,16,おみやげ,souvenir / present,omiyage
+510,16,~ごろ,about ~ (time),~goro
+511,16,なにか,something,nanika
+512,16,どこか,somewhere / some place,dokoka
+513,16,おなかがすきました,I'm hungry.,onaka ga sukimashita
+514,16,おなかがいっぱいです,I'm full.,onaka ga ippai desu
+515,16,のどがかわきました,I'm thirsty.,nodo ga kawakimashita
+516,16,そうですね,I agree with you. / Let me see.,sō desu ne
+517,16,そうしましょう,Let's do that.,sō shimashō
+518,16,ご注文は,May I take your order?,go-chūmon wa
+519,16,ていしょく,set meal,teishoku
+520,16,ぎゅうどん,bowl of rice topped with beef,gyūdon
+521,16,[少々] お待ちください,Please wait [a moment].,[shōshō] omachi kudasai
+522,16,でございます,polite equivalent of です,de gozaimasu
+523,16,べつべつに,separately,betsubetsu ni
+524,17,のります,ride / board,norimasu
+525,17,[でんしゃに~] のります,board [a train],[densha ni~] norimasu
+526,17,おります,get off,orimasu
+527,17,[でんしゃを~] おります,get off [a train],[densha o~] orimasu
+528,17,のりかえます,change / transfer [trains],norikaemasu
+529,17,あびます,take [a shower],abimasu
+530,17,[シャワーを~] あびます,take [a shower],[shawā o~] abimasu
+531,17,いれます,put in / insert,iremasu
+532,17,だします,take out / hand in / withdraw,dashimasu
+533,17,おします,push / press,oshimasu
+534,17,やめます,quit / retire / stop,yamemasu
+535,17,はいります,enter [university],hairimasu
+536,17,[だいがくに~] はいります,enter [university],[daigaku ni~] hairimasu
+537,17,でます,graduate [from university],demasu
+538,17,[だいがくを~] でます,graduate [from university],[daigaku o~] demasu
+539,17,わかい,young,wakai
+540,17,ながい,long,nagai
+541,17,みじかい,short,mijikai
+542,17,あかるい,bright,akarui
+543,17,くらい,dark,kurai
+544,17,からだ,body / health,karada
+545,17,あたま,head / brain,atama
+546,17,かみ,hair,kami
+547,17,かお,face,kao
+548,17,め,eye,me
+549,17,みみ,ear,mimi
+550,17,は,tooth,ha
+551,17,おなか,stomach,onaka
+552,17,あし,leg / foot,ashi
+553,17,せい,height,sei
+554,17,[せいが~] たかい,tall [height],[sei ga~] takai
+555,17,サービス,service,sābisu
+556,17,ジョギング,jogging,jogingu
+557,17,シャワー,shower,shawā
+558,17,みどり,green / greenery,midori
+559,17,[お]てら,Buddhist temple,[o]tera
+560,17,じんじゃ,Shinto shrine,jinja
+561,17,~ばん,~ number,~ban
+562,17,どうやって,how / in what way,dōyatte
+563,17,どの~,which ~ (used with 3 or more),dono~
+564,17,どれ,which one (of 3 or more),dore
+565,17,すごいですね,That's amazing!,sugoi desu ne
+566,17,[いいえ、] まだまだです,"[No,] I still have a long way to go.",[iie、] madamadadesu
+567,17,おひきだしですか,Are you making a withdrawal?,ohikidashi desu ka
+568,17,まず,first of all,mazu
+569,17,つぎに,next / next step,tsugi ni
+570,17,キャッシュカード,cash dispensing card,kyasshukādo
+571,17,あんしょうばんごう,personal identification number / PIN,anshōbangō
+572,17,きんがく,amount of money,kingaku
+573,17,かくにん,confirmation,kakunin
+574,17,[ボタンを~] おします,press [a button],[botan o~] oshimasu
+575,18,のぼります,climb,noborimasu
+576,18,[やまに~] のぼります,climb [a mountain],[yama ni~] noぼります
+577,18,とまります,stay [at a hotel],tomarimasu
+578,18,[ホテルに~] とまります,stay [at a hotel],[hoteru ni~] tomarimasu
+579,18,そうじします,clean (a room),sōjishimasu
+580,18,せんたくします,wash (clothes),sentakushimasu
+581,18,なります,become,narimasu
+582,18,ねむい,sleepy,nemui
+583,18,つよい,strong,tsuyoi
+584,18,よわい,weak,yowai
+585,18,れんしゅう,practice,renshū
+586,18,[~を~] れんしゅうします,practice [~],[~ o~] renshūshimasu
+587,18,ゴルフ,golf,gorufu
+588,18,[~を~] します,play golf,[~ o~] shimasu
+589,18,すもう,sumo wrestling,sumō
+590,18,パチンコ,pachinko (Japanese pinball),pachinko
+591,18,おちゃ,tea ceremony / tea,ocha
+592,18,ひ,day / date,hi
+593,18,いちど,once,ichido
+594,18,いちども,not once / never (used with negative),ichidomo
+595,18,だんだん,gradually,dandan
+596,18,もうすぐ,soon,mō sugu
+597,18,おかげさまで,Thanks to you / Fortunately,okagesamade
+598,18,でも,but,demo
+599,18,かんぱい,Cheers!,kanpai
+600,18,ダイエット,diet,daietto
+601,18,[~を~] します,go on a diet,[~ o~] shimasu
+602,18,むり[な],impossible / excessive,muri[na]
+603,18,からだにいい,good for one's health,karada ni ii
+604,18,ケーキ,cake,kēki
+605,18,コンテスト,contest,kontesto
+606,18,きもの,kimono,kimono
+607,18,びょういん,hospital,byōin
+608,18,こうえん,park,kōen
+609,19,おもいます,think,omoimasu
+610,19,いいます,say,iimasu
+611,19,かちます,win,kachimasu
+612,19,まけます,lose / be defeated,makemasu
+613,19,あります,be held / take place,arimasu
+614,19,[おまつりが~] あります,be held [a festival],[omatsuri ga~] arimasu
+615,19,役に立ちます,be useful,yaku ni tachimasu
+616,19,うごきます,move / work,ugokimasu
+617,19,やめます,quit / retire / stop,yamemasu
+618,19,[かいしゃを~] やめます,quit [a company],[kaisha o~] yaめます
+619,19,きをつけます,be careful / pay attention,ki o tsukemasu
+620,19,りゅうがくします,study abroad,ryūgakushimasu
+621,19,むだ[な],wasteful,muda[na]
+622,19,ふべん[な],inconvenient,fuben[na]
+623,19,おなじ,same,onaji
+624,19,すごい,awful / wonderful / great,sugoi
+625,19,しゅしょう,prime minister,shushō
+626,19,だいとうりょう,president (of a country),daitōryō
+627,19,せいじ,politics,seiji
+628,19,ニュース,news,nyūsu
+629,19,スピーチ,speech,supīchi
+630,19,しあい,game / match,shiai
+631,19,アルバイト,side job / part-time job,arubaito
+632,19,[~を~] します,work a part-time job,[~ o~] shimasu
+633,19,いけん,opinion,iken
+634,19,[お]はなし,talk / story / speech,[o]hanashi
+635,19,ユーモア,humor,yūmoa
+636,19,デザイン,design,dezain
+637,19,こうつう,traffic / transportation,kōtsū
+638,19,ぶっか,prices (of commodities) / cost of living,bukka
+639,19,ほうそう,broadcast / broadcasting,hōsō
+640,19,テレビばんぐみ,TV program,terebi bangumi
+641,19,アニメ,anime / cartoon,anime
+642,19,マンガ,manga / comic book,manga
+643,19,デザイン,design,dezain
+644,19,こうつう,traffic / transportation,kōtsū
+645,19,さいきん,recently / these days,saikin
+646,19,たぶん,perhaps / probably,tabun
+647,19,きっと,surely / definitely,kitto
+648,19,ほんとうに,really / truly,hontō ni
+649,19,そんなに,not so much (used with negatives),sonnani
+650,19,~について,about ~ / regarding ~,~ ni tsuite
+651,19,しかたがありません,There is no other way. / It can't be helped.,shikata ga arimasen
+652,19,しばらくですね,It's been a while.,shibaraku desu ne
+653,19,〜でものみませんか,How about drinking ~ or something?,~ demo nomimasen ka
+654,19,みないと...,I must watch it...,minaito...
+655,19,もちろん,of course,mochiron
+656,19,カンガルー,kangaroo,kangarū
+657,20,ききます,ask,kikimasu
+658,20,[せんせいに~] ききます,ask [the teacher],[sensei ni~] kikimasu
+659,20,まわします,turn / rotate,mawashimasu
+660,20,ひきます,pull,hikimasu
+661,20,かえます,change,kaemasu
+662,20,さわります,touch,sawarimasu
+663,20,[ドアに~] さわります,touch [a door],[doa ni~] sawarimasu
+664,20,でます,come out / emerge,demasu
+665,20,[おつりが~] でます,come out [change],[otsuri ga~] demasu
+666,20,あるきます,walk,arukimasu
+667,20,[みちを~] あるきます,walk [along a road],[michi o~] arukimasu
+668,20,わたります,cross,watarimasu
+669,20,[はしを~] わたります,cross [a bridge],[hashi o~] watarimasu
+670,20,きをつけます,pay attention / take care,ki o tsukemasu
+671,20,[くるまに~] きをつけます,take care [of cars],[kuruma ni~] ki o tsukemasu
+672,20,ひっこしします,move (house),hikkoshishimasu
+673,20,でんきや,electrical appliance store,denkiya
+674,20,~や,~ store / ~ shop,~ya
+675,20,サイズ,size,saizu
+676,20,おと,sound,oto
+677,20,きかい,machine,kikai
+678,20,つまみ,knob,tsumami
+679,20,こしょう,breakdown / failure,koshō
+680,20,[~が~] こしょうします,break down,[~ ga~] koshōshimasu
+681,20,みち,road / way / street,michi
+682,20,こうさてん,intersection / crossroads,kōsaten
+683,20,しんごう,traffic light,shingō
+684,20,かど,corner,kado
+685,20,はし,bridge,hashi
+686,20,ちゅうしゃじょう,parking lot / car park,chūshajō
+687,20,たてもの,building,tatemono
+688,20,がいこくじん,foreigner,gaikokujin
+689,20,~や,shop / store / seller,~ya
+690,20,しょうがつ,New Year's Day / New Year,shōgatsu
+691,20,ごちそうさまでした,Thank you for the meal (after eating),gochisōsama deshita
+692,20,たてもの,building,tatemono
+693,20,がいこくじん,foreigner,gaikokujin
+694,20,なんかいも,many times / repeatedly,nankaimo
+695,20,~め,~th (ordinal number prefix),~me
+696,20,ひとつめ,the first one,hitotsume
+697,20,しょうゆ,soy sauce,shōyu
+698,20,ソース,sauce,sōsu
+699,20,おひきだしですか,Are you making a withdrawal?,ohikidashi desu ka
+700,20,つまみ,knob,tsumami
+701,20,どういたしまして,You're welcome.,dōitashimashite
+702,21,青い,blue,aoi
+703,21,赤い,red,akai
+704,21,明るい,bright,akarui
+705,21,明らかな,clear/obvious,akiraka na
+706,21,開ける,to open,akeru
+707,21,朝,morning,asa
+708,21,足,leg/foot,ashi
+709,21,暖かい/温かい,warm,atatakai
+710,21,頭,head,atama
+711,21,暑い,hot,atsui
+712,21,集まる,to gather,atsumaru
+713,21,兄,older brother,ani
+714,21,姉,older sister,ane
+715,21,洗う,to wash,arau
+716,21,歩く,to walk,aruku
+717,21,安心な,relieved/safe,anshin na
+718,21,安全な,safe,anzen na
+719,21,買う,to buy,kau
+720,21,帰り,return,kaeri
+721,21,顔,face,kao
+722,21,風,wind,kaze
+723,21,悲しい,sad,kanashii
+724,21,神,god,kami
+725,21,通う,to commute,kayou
+726,21,体,body,karada
+727,21,借りる,to borrow,kariru
+728,21,軽い,light,karui
+729,21,考える,to think,kangaeru
+730,21,決まる,to be decided,kimaru
+731,21,着物,kimono,kimono
+732,21,切る,to cut,kiru
+733,21,近所,neighborhood,kinjo
+734,21,具合,condition,guai
+735,21,空港,airport,kuukou
+736,21,薬,medicine,kusuri
+737,21,首,neck,kubi
+738,21,暗い,dark,kurai
+739,21,黒い,black,kuroi
+740,21,経験,experience,keiken
+741,21,消す,to erase/turn off,kesu
+742,21,研究,research,kenkyuu
+743,21,工場,factory,koujou
+744,21,声,voice,koe
+745,21,故障,breakdown,koshou
+746,21,答え,answer,kotae
+747,21,米,rice,kome
+748,21,今度,next time,kondo
+749,21,探す,to search,sagasu
+750,21,魚,fish,sakana
+751,21,寒い,cold,samui
+752,21,残念な,regrettable,zannen na
+753,21,静かな,quiet,shizuka na
+754,21,親しい,intimate/close,shitashii
+755,21,品物,goods,shinamono
+756,21,閉める,to close,shimeru
+757,21,自由な,free,jiyuu na
+758,21,十分な,enough,juubun na
+759,21,上手な,skilled,jouzu na
+760,21,出発,departure,shuppatsu
+761,21,趣味,hobby,shumi
+762,21,準備,preparation,junbi
+763,21,小説,novel,shousetsu
+764,21,食堂,cafeteria,shokudou
+765,21,知る,to know,shiru
+766,21,親切な,kind,shinsetsu na
+767,21,心配な,worried,shinpai na
+768,21,好きな,like,suki na
+769,21,涼しい,cool,suzushii
+770,21,進む,to advance,susumu
+771,21,座る,to sit,suwaru
+772,21,大事な,important,daiji na
+773,21,大切な,important,taisetsu na
+774,21,高い,high/expensive,takai
+775,21,確かな,certain,tashika na
+776,21,出す,to take out,dasu
+777,21,正しい,correct,tadashii
+778,21,楽しい,fun,tanoshii
+779,21,食べる,to eat,taberu
+780,21,足りる,to be sufficient,tariru
+781,21,小さい,small,chiisai
+782,21,近い,near,chikai
+783,21,力,power,chikara
+784,21,注意,caution,chuui
+785,21,中止,cancellation,chuushi
+786,21,使う,to use,tsukau
+787,21,着く,to arrive,tsuku
+788,21,机,to desk,tsukue
+789,21,空,sky,sora
+790,21,都合,convenience,tsugou
+791,21,強い,strong,tsuyoi
+792,21,手紙,letter,tegami
+793,21,出口,exit,deguchi
+794,21,出る,to go out,deru
+795,21,遠い,far,tooi
+796,21,通る,to pass,tooru
+797,21,特別な,special,tokubetsu na
+798,21,止まる,to stop,tomaru
+799,21,鳥,bird,tori
+800,21,取る,to take,toru
+801,21,長い,long,nagai
+802,21,夏,summer,natsu
+803,21,習う,to learn,narau
+804,21,日記,diary,nikki
+805,21,熱心な,enthusiastic,nesshin na
+806,21,眠い,sleepy,nemui
+807,21,眠る,to sleep,nemuru
+808,21,乗る,to ride,noru
+809,21,運ぶ,to carry,hakobu
+810,21,始める,to begin,hajimeru
+811,21,走る,to run,hashiru
+812,21,働く,to work,hataraku
+813,21,花,flower,hana
+814,21,早い,early/fast,hayai
+815,21,春,spring,haru
+816,21,反対,opposite,hantai
+817,21,低い,low,hikui
+818,21,必要な,necessary,hitsuyou na
+819,21,昼,noon,hiru
+820,21,広い,wide,hiroi
+821,21,太い,fat/thick,futoi
+822,21,不便な,inconvenient,fuben na
+823,21,冬,winter,fuyu
+824,21,古い,old,furui
+825,21,勉強,study,benkyou
+826,21,返事,reply,henji
+827,21,便利な,convenient,benri na
+828,21,前,front,mae
+829,21,町,town,machi
+830,21,間に合う,to be in time,ma ni au
+831,21,短い,short,mijikai
+832,21,湖,lake,mizuumi
+833,21,店,shop,mise
+834,21,道,road,michi
+835,21,港,port,minato
+836,21,南,south,minami
+837,21,耳,ear,mimi
+838,21,村,village,mura
+839,21,無理な,impossible,muri na
+840,21,目,eye,me
+841,21,持つ,to hold,motsu
+842,21,森,forest,mori
+843,21,野菜,vegetable,yasai
+844,21,安い,cheap,yasui
+845,21,休む,to rest,yasumu
+846,21,夕方,evening,yuugata
+847,21,有名な,famous,yuumei na
+848,21,雪,snow,yuki
+849,21,指,finger,yubi
+850,21,輸入,import,yunyuu
+851,21,用意,preparation,youi
+852,21,予習,preparation for class,yoshuu
+853,21,読む,to read,yomu
+854,21,喜ぶ,to be glad,yorokobu
+855,21,弱い,weak,yowai
+856,21,料理,cooking,ryouri
+857,21,悪い,bad,warui
+858,22,青い,blue,aoi
+859,22,赤い,red,akai
+860,22,明るい,bright,akarui
+861,22,明らかな,clear/obvious,akiraka na
+862,22,開ける,to open,akeru
+863,22,朝,morning,asa
+864,22,足,leg/foot,ashi
+865,22,暖かい/温かい,warm,atatakai
+866,22,頭,head,atama
+867,22,暑い,hot,atsui
+868,22,集まる,to gather,atsumaru
+869,22,兄,older brother,ani
+870,22,姉,older sister,ane
+871,22,洗う,to wash,arau
+872,22,歩く,to walk,aruku
+873,22,安心な,relieved/safe,anshin na
+874,22,安全な,safe,anzen na
+875,22,買う,to buy,kau
+876,22,帰り,return,kaeri
+877,22,顔,face,kao
+878,22,風,wind,kaze
+879,22,悲しい,sad,kanashii
+880,22,神,god,kami
+881,22,通う,to commute,kayou
+882,22,体,body,karada
+883,22,借りる,to borrow,kariru
+884,22,軽い,light,karui
+885,22,考える,to think,kangaeru
+886,22,決まる,to be decided,kimaru
+887,22,着物,kimono,kimono
+888,22,切る,to cut,kiru
+889,22,近所,neighborhood,kinjo
+890,22,具合,condition,guai
+891,22,空港,airport,kuukou
+892,22,薬,medicine,kusuri
+893,22,首,neck,kubi
+894,22,暗い,dark,kurai
+895,22,黒い,black,kuroi
+896,22,経験,experience,keiken
+897,22,消す,to erase/turn off,kesu
+898,22,研究,research,kenkyuu
+899,22,工場,factory,koujou
+900,22,声,voice,koe
+901,22,故障,breakdown,koshou
+902,22,答え,answer,kotae
+903,22,米,rice,kome
+904,22,今度,next time,kondo
+905,22,探す,to search,sagasu
+906,22,魚,fish,sakana
+907,22,寒い,cold,samui
+908,22,残念な,regrettable,zannen na
+909,22,静かな,quiet,shizuka na
+910,22,親しい,intimate/close,shitashii
+911,22,品物,goods,shinamono
+912,22,閉める,to close,shimeru
+913,22,自由な,free,jiyuu na
+914,22,十分な,enough,juubun na
+915,22,上手な,skilled,jouzu na
+916,22,出発,departure,shuppatsu
+917,22,趣味,hobby,shumi
+918,22,準備,preparation,junbi
+919,22,小説,novel,shousetsu
+920,22,食堂,cafeteria,shokudou
+921,22,知る,to know,shiru
+922,22,親切な,kind,shinsetsu na
+923,22,心配な,worried,shinpai na
+924,22,好きな,like,suki na
+925,22,涼しい,cool,suzushii
+926,22,進む,to advance,susumu
+927,22,座る,to sit,suwaru
+928,22,大事な,important,daiji na
+929,22,大切な,important,taisetsu na
+930,22,高い,high/expensive,takai
+931,22,確かな,certain,tashika na
+932,22,出す,to take out,dasu
+933,22,正しい,correct,tadashii
+934,22,楽しい,fun,tanoshii
+935,22,食べる,to eat,taberu
+936,22,足りる,to be sufficient,tariru
+937,22,小さい,small,chiisai
+938,22,近い,near,chikai
+939,22,力,power,chikara
+940,22,注意,caution,chuui
+941,22,中止,cancellation,chuushi
+942,22,使う,to use,tsukau
+943,22,着く,to arrive,tsuku
+944,22,机,to desk,tsukue
+945,22,空,sky,sora
+946,22,都合,convenience,tsugou
+947,22,強い,strong,tsuyoi
+948,22,手紙,letter,tegami
+949,22,出口,exit,deguchi
+950,22,出る,to go out,deru
+951,22,遠い,far,tooi
+952,22,通る,to pass,tooru
+953,22,特別な,special,tokubetsu na
+954,22,止まる,to stop,tomaru
+955,22,鳥,bird,tori
+956,22,取る,to take,toru
+957,22,長い,long,nagai
+958,22,夏,summer,natsu
+959,22,習う,to learn,narau
+960,22,日記,diary,nikki
+961,22,熱心な,enthusiastic,nesshin na
+962,22,眠い,sleepy,nemui
+963,22,眠る,to sleep,nemuru
+964,22,乗る,to ride,noru
+965,22,運ぶ,to carry,hakobu
+966,22,始める,to begin,hajimeru
+967,22,走る,to run,hashiru
+968,22,働く,to work,hataraku
+969,22,花,flower,hana
+970,22,早い,early/fast,hayai
+971,22,春,spring,haru
+972,22,反対,opposite,hantai
+973,22,低い,low,hikui
+974,22,必要な,necessary,hitsuyou na
+975,22,昼,noon,hiru
+976,22,広い,wide,hiroi
+977,22,太い,fat/thick,futoi
+978,22,不便な,inconvenient,fuben na
+979,22,冬,winter,fuyu
+980,22,古い,old,furui
+981,22,勉強,study,benkyou
+982,22,返事,reply,henji
+983,22,便利な,convenient,benri na
+984,22,前,front,mae
+985,22,町,town,machi
+986,22,間に合う,to be in time,ma ni au
+987,22,短い,short,mijikai
+988,22,湖,lake,mizuumi
+989,22,店,shop,mise
+990,22,道,road,michi
+991,22,港,port,minato
+992,22,南,south,minami
+993,22,耳,ear,mimi
+994,22,村,village,mura
+995,22,無理な,impossible,muri na
+996,22,目,eye,me
+997,22,持つ,to hold,motsu
+998,22,森,forest,mori
+999,22,野菜,vegetable,yasai
+1000,22,安い,cheap,yasui
+1001,22,休む,to rest,yasumu
+1002,22,夕方,evening,yuugata
+1003,22,有名な,famous,yuumei na
+1004,22,雪,snow,yuki
+1005,22,指,finger,yubi
+1006,22,輸入,import,yunyuu
+1007,22,用意,preparation,youi
+1008,22,予習,preparation for class,yoshuu
+1009,22,読む,to read,yomu
+1010,22,喜ぶ,to be glad,yorokobu
+1011,22,弱い,weak,yowai
+1012,22,料理,cooking,ryouri
+1013,22,悪い,bad,warui
+1014,23,青い,blue,aoi
+1015,23,赤い,red,akai
+1016,23,明るい,bright,akarui
+1017,23,明らかな,clear/obvious,akiraka na
+1018,23,開ける,to open,akeru
+1019,23,朝,morning,asa
+1020,23,足,leg/foot,ashi
+1021,23,暖かい/温かい,warm,atatakai
+1022,23,頭,head,atama
+1023,23,暑い,hot,atsui
+1024,23,集まる,to gather,atsumaru
+1025,23,兄,older brother,ani
+1026,23,姉,older sister,ane
+1027,23,洗う,to wash,arau
+1028,23,歩く,to walk,aruku
+1029,23,安心な,relieved/safe,anshin na
+1030,23,安全な,safe,anzen na
+1031,23,買う,to buy,kau
+1032,23,帰り,return,kaeri
+1033,24,顔,face,kao
+1034,24,風,wind,kaze
+1035,24,悲しい,sad,kanashii
+1036,24,神,god,kami
+1037,24,通う,to commute,kayou
+1038,24,体,body,karada
+1039,24,借りる,to borrow,kariru
+1040,24,軽い,light,karui
+1041,24,考える,to think,kangaeru
+1042,24,決まる,to be decided,kimaru
+1043,24,着物,kimono,kimono
+1044,24,切る,to cut,kiru
+1045,24,近所,neighborhood,kinjo
+1046,24,具合,condition,guai
+1047,24,空港,airport,kuukou
+1048,24,薬,medicine,kusuri
+1049,24,首,neck,kubi
+1050,24,暗い,dark,kurai
+1051,24,黒い,black,kuroi
+1052,25,経験,experience,keiken
+1053,25,消す,to erase/turn off,kesu
+1054,25,研究,research,kenkyuu
+1055,25,工場,factory,koujou
+1056,25,声,voice,koe
+1057,25,故障,breakdown,koshou
+1058,25,答え,answer,kotae
+1059,25,米,rice,kome
+1060,25,今度,next time,kondo
+1061,25,探す,to search,sagasu
+1062,25,魚,fish,sakana
+1063,25,寒い,cold,samui
+1064,25,残念な,regrettable,zannen na
+1065,25,静かな,quiet,shizuka na
+1066,25,親しい,intimate/close,shitashii
+1067,25,品物,goods,shinamono
+1068,25,閉める,to close,shimeru
+1069,25,自由な,free,jiyuu na
+1070,25,十分な,enough,juubun na
+1071,26,上手な,skilled,jouzu na
+1072,26,出発,departure,shuppatsu
+1073,26,趣味,hobby,shumi
+1074,26,準備,preparation,junbi
+1075,26,小説,novel,shousetsu
+1076,26,食堂,cafeteria,shokudou
+1077,26,知る,to know,shiru
+1078,26,親切な,kind,shinsetsu na
+1079,26,心配な,worried,shinpai na
+1080,26,好きな,like,suki na
+1081,26,涼しい,cool,suzushii
+1082,26,進む,to advance,susumu
+1083,26,座る,to sit,suwaru
+1084,26,大事な,important,daiji na
+1085,26,大切な,important,taisetsu na
+1086,26,高い,high/expensive,takai
+1087,26,確かな,certain,tashika na
+1088,26,出す,to take out,dasu
+1089,26,正しい,correct,tadashii
+1090,27,楽しい,fun,tanoshii
+1091,27,食べる,to eat,taberu
+1092,27,足りる,to be sufficient,tariru
+1093,27,小さい,small,chiisai
+1094,27,近い,near,chikai
+1095,27,力,power,chikara
+1096,27,注意,caution,chuui
+1097,27,中止,cancellation,chuushi
+1098,27,使う,to use,tsukau
+1099,27,着く,to arrive,tsuku
+1100,27,机,to desk,tsukue
+1101,27,空,sky,sora
+1102,27,都合,convenience,tsugou
+1103,27,強い,strong,tsuyoi
+1104,27,手紙,letter,tegami
+1105,27,出口,exit,deguchi
+1106,27,出る,to go out,deru
+1107,27,遠い,far,tooi
+1108,27,通る,to pass,tooru
+1109,28,反対,opposite,hantai
+1110,28,低い,low,hikui
+1111,28,必要な,necessary,hitsuyou na
+1112,28,昼,noon,hiru
+1113,28,広い,wide,hiroi
+1114,28,太い,fat/thick,futoi
+1115,28,不便な,inconvenient,fuben na
+1116,28,冬,winter,fuyu
+1117,28,古い,old,furui
+1118,28,勉強,study,benkyou
+1119,28,返事,reply,henji
+1120,28,便利な,convenient,benri na
+1121,28,前,front,mae
+1122,28,町,town,machi
+1123,28,間に合う,to be in time,ma ni au
+1124,28,短い,short,mijikai
+1125,28,湖,lake,mizuumi
+1126,28,店,shop,mise
+1127,28,道,road,michi
+1128,28,港,port,minato
+1129,28,南,south,minami
+1130,28,耳,ear,mimi
+1131,28,村,village,mura
+1132,28,無理な,impossible,muri na
+1133,28,目,eye,me
+1134,28,持つ,to hold,motsu
+1135,28,森,forest,mori
+1136,28,野菜,vegetable,yasai
+1137,28,安い,cheap,yasui
+1138,28,休む,to rest,yasumu
+1139,28,夕方,evening,yuugata
+1140,28,有名な,famous,yuumei na
+1141,28,雪,snow,yuki
+1142,28,指,finger,yubi
+1143,28,輸入,import,yunyuu
+1144,28,用意,preparation,youi
+1145,28,予習,preparation for class,yoshuu
+1146,28,読む,to read,yomu
+1147,28,喜ぶ,to be glad,yorokobu
+1148,28,弱い,weak,yowai
+1149,28,料理,cooking,ryouri
+1150,28,悪い,bad,warui
+1151,29,乗る,to ride,noru
+1152,29,運ぶ,to carry,hakobu
+1153,29,始める,to begin,hajimeru
+1154,29,走る,to run,hashiru
+1155,29,働く,to work,hataraku
+1156,29,花,flower,hana
+1157,29,早い,early/fast,hayai
+1158,29,春,spring,haru
+1159,29,反対,opposite,hantai
+1160,29,低い,low,hikui
+1161,29,必要な,necessary,hitsuyou na
+1162,29,昼,noon,hiru
+1163,29,広い,wide,hiroi
+1164,29,太い,fat/thick,futoi
+1165,29,不便な,inconvenient,fuben na
+1166,29,冬,winter,fuyu
+1167,29,古い,old,furui
+1168,29,勉強,study,benkyou
+1169,29,返事,reply,henji
+1170,29,便利な,convenient,benri na
+1171,29,前,front,mae
+1172,29,町,town,machi
+1173,29,間に合う,to be in time,ma ni au
+1174,29,短い,short,mijikai
+1175,29,湖,lake,mizuumi
+1176,29,店,shop,mise
+1177,29,道,road,michi
+1178,29,港,port,minato
+1179,29,南,south,minami
+1180,29,耳,ear,mimi
+1181,29,村,village,mura
+1182,29,無理な,impossible,muri na
+1183,29,目,eye,me
+1184,29,持つ,to hold,motsu
+1185,29,森,forest,mori
+1186,29,野菜,vegetable,yasai
+1187,29,安い,cheap,yasui
+1188,29,休む,to rest,yasumu
+1189,29,夕方,evening,yuugata
+1190,29,有名な,famous,yuumei na
+1191,29,雪,snow,yuki
+1192,29,指,finger,yubi
+1193,29,輸入,import,yunyuu
+1194,29,用意,preparation,youi
+1195,29,予習,preparation for class,yoshuu
+1196,29,読む,to read,yomu
+1197,29,喜ぶ,to be glad,yorokobu
+1198,29,弱い,weak,yowai
+1199,29,料理,cooking,ryouri
+1200,29,悪い,bad,warui
+1201,29,乗る,to ride,noru
+1202,29,運ぶ,to carry,hakobu
+1203,29,始める,to begin,hajimeru
+1204,29,走る,to run,hashiru
+1205,29,働く,to work,hataraku
+1206,29,花,flower,hana
+1207,29,早い,early/fast,hayai
+1208,29,春,spring,haru
+1209,29,反対,opposite,hantai
+1210,29,低い,low,hikui
+1211,29,必要な,necessary,hitsuyou na
+1212,29,昼,noon,hiru
+1213,29,広い,wide,hiroi
+1214,29,太い,fat/thick,futoi
+1215,29,不便な,inconvenient,fuben na
+1216,29,冬,winter,fuyu
+1217,29,古い,old,furui
+1218,29,勉強,study,benkyou
+1219,29,返事,reply,henji
+1220,29,便利な,convenient,benri na
+1221,29,前,front,mae
+1222,29,町,town,machi
+1223,29,間に合う,to be in time,ma ni au
+1224,29,短い,short,mijikai
+1225,29,湖,lake,mizuumi
+1226,29,店,shop,mise
+1227,29,道,road,michi
+1228,29,港,port,minato
+1229,29,南,south,minami
+1230,29,耳,ear,mimi
+1231,29,村,village,mura
+1232,29,無理な,impossible,muri na
+1233,29,目,eye,me
+1234,29,持つ,to hold,motsu
+1235,29,森,forest,mori
+1236,29,野菜,vegetable,yasai
+1237,29,安い,cheap,yasui
+1238,29,休む,to rest,yasumu
+1239,29,夕方,evening,yuugata
+1240,29,有名な,famous,yuumei na
+1241,29,雪,snow,yuki
+1242,29,指,finger,yubi
+1243,29,輸入,import,yunyuu
+1244,29,用意,preparation,youi
+1245,29,予習,preparation for class,yoshuu
+1246,29,読む,to read,yomu
+1247,29,喜ぶ,to be glad,yorokobu
+1248,29,弱い,weak,yowai
+1249,29,料理,cooking,ryouri
+1250,29,悪い,bad,warui
+1251,29,乗る,to ride,noru
+1252,29,運ぶ,to carry,hakobu
+1253,29,始める,to begin,hajimeru
+1254,29,走る,to run,hashiru
+1255,29,働く,to work,hataraku
+1256,29,花,flower,hana

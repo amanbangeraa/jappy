@@ -1,13 +1,27 @@
 // -- Connection setup ---------------------------------------------------------
 
 import { neon } from '@neondatabase/serverless';
+import { Client as PgClient } from 'pg';
 
 declare const process: { env: Record<string, string | undefined> };
 
-function getConnectionString(): string {
-  const connectionString = process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL;
+type DbSource = 'neon' | 'local';
+
+function getDbSource(): DbSource {
+  const raw = (process.env.JAPPY_DB_SOURCE ?? 'neon').trim().toLowerCase();
+  return raw === 'local' ? 'local' : 'neon';
+}
+
+function getConnectionString(source: DbSource): string {
+  const connectionString = source === 'local'
+    ? (process.env.LOCAL_DATABASE_URL || process.env.DATABASE_URL)
+    : (process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL);
   if (!connectionString) {
-    throw new Error('Neither DATABASE_URL_UNPOOLED nor DATABASE_URL environment variable is set');
+    throw new Error(
+      source === 'local'
+        ? 'JAPPY_DB_SOURCE=local requires LOCAL_DATABASE_URL (or DATABASE_URL)'
+        : 'JAPPY_DB_SOURCE=neon requires DATABASE_URL_UNPOOLED (or DATABASE_URL)',
+    );
   }
   return connectionString;
 }
@@ -21,11 +35,41 @@ interface QueryResult<T = Record<string, unknown>> {
   rowCount: number;
 }
 
-const sqlClient = neon(getConnectionString());
+let neonClient: ReturnType<typeof neon> | null = null;
+let localClientPromise: Promise<PgClient> | null = null;
 let migrationsPromise: Promise<void> | null = null;
 
+function getNeonClient() {
+  if (!neonClient) {
+    neonClient = neon(getConnectionString('neon'));
+  }
+  return neonClient;
+}
+
+async function getLocalClient(): Promise<PgClient> {
+  localClientPromise ??= (async () => {
+    const client = new PgClient({ connectionString: getConnectionString('local') });
+    await client.connect();
+    return client;
+  })();
+  return localClientPromise;
+}
+
 export async function executeQuery<T = Record<string, unknown>>(queryText: string, params: unknown[] = []): Promise<QueryResult<T>> {
-  const rows = await sqlClient.query(queryText, params) as T[];
+  const source = getDbSource();
+
+  if (source === 'local') {
+    const client = await getLocalClient();
+    const result = await client.query(queryText, params as unknown[]);
+    return {
+      fields: result.fields.map((field) => ({ name: field.name, dataTypeID: field.dataTypeID })),
+      rows: result.rows as T[],
+      command: result.command,
+      rowCount: result.rowCount ?? result.rows.length,
+    };
+  }
+
+  const rows = await getNeonClient().query(queryText, params) as T[];
 
   return {
     fields: [],
