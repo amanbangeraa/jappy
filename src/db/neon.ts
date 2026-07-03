@@ -14,12 +14,12 @@ function getDbSource(): DbSource {
 
 function getConnectionString(source: DbSource): string {
   const connectionString = source === 'local'
-    ? (process.env.LOCAL_DATABASE_URL || process.env.DATABASE_URL)
+    ? process.env.LOCAL_DATABASE_URL
     : (process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL);
   if (!connectionString) {
     throw new Error(
       source === 'local'
-        ? 'JAPPY_DB_SOURCE=local requires LOCAL_DATABASE_URL (or DATABASE_URL)'
+        ? 'JAPPY_DB_SOURCE=local requires LOCAL_DATABASE_URL'
         : 'JAPPY_DB_SOURCE=neon requires DATABASE_URL_UNPOOLED (or DATABASE_URL)',
     );
   }

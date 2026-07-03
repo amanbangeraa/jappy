@@ -65,7 +65,7 @@ Both CSV scripts auto-load `.env.local` (then `.env`) automatically.
 When running locally, you can choose your data source:
 
 - `JAPPY_DB_SOURCE=neon` uses Neon (`DATABASE_URL_UNPOOLED` or `DATABASE_URL`).
-- `JAPPY_DB_SOURCE=local` uses local Postgres (`LOCAL_DATABASE_URL` or `DATABASE_URL`).
+- `JAPPY_DB_SOURCE=local` uses local Postgres (`LOCAL_DATABASE_URL` only).
 
 Convenience commands:
 

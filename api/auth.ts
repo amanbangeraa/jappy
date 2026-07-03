@@ -56,7 +56,7 @@ function getToken(req: Request): string | null {
 }
 
 function tokenSecret(): string {
-  return process.env.SESSION_SECRET || process.env.DATABASE_URL || 'jappy-dev-session-secret';
+  return process.env.SESSION_SECRET || 'jappy-dev-session-secret';
 }
 
 function sign(value: string): string {
