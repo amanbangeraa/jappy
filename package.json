@@ -17,12 +17,12 @@
     "@neondatabase/serverless": "^1.1.0",
     "@types/pg": "^8.20.0",
     "bcryptjs": "^3.0.3",
-    "dexie": "^4.4.3",
     "papaparse": "^5.5.3",
     "pg": "^8.22.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^7.17.0"
+    "react-router-dom": "^7.17.0",
+    "undici": "^7.28.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

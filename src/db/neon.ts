@@ -1,9 +1,24 @@
 // -- Connection setup ---------------------------------------------------------
 
-import { neon } from '@neondatabase/serverless';
-import { Client as PgClient } from 'pg';
+import { neon, neonConfig } from '@neondatabase/serverless';
 
 declare const process: { env: Record<string, string | undefined> };
+
+// `pg` is only needed for the local Postgres source. It is loaded lazily so the
+// default Neon path never requires the `pg` native module. We use an indirect
+// require (hidden from Vite's static analyzer) so the SSR loader doesn't try to
+// pre-bundle `pg` for the browser/ESM context.
+type PgClient = import('pg').Client;
+type PgClientCtor = typeof import('pg').Client;
+let pgClientCtor: PgClientCtor | null = null;
+async function getPgClientCtor(): Promise<PgClientCtor> {
+  if (!pgClientCtor) {
+    const indirectRequire = (0, eval)('require') as NodeRequire;
+    const mod = indirectRequire('pg') as typeof import('pg');
+    pgClientCtor = mod.Client;
+  }
+  return pgClientCtor;
+}
 
 type DbSource = 'neon' | 'local';
 
@@ -39,6 +54,27 @@ let neonClient: ReturnType<typeof neon> | null = null;
 let localClientPromise: Promise<PgClient> | null = null;
 let migrationsPromise: Promise<void> | null = null;
 
+// Neon's host resolves to IPv6 addresses first, but the IPv6 route times out
+// (ETIMEDOUT) on this machine while IPv4 works. undici's `fetch` (used by
+// @neondatabase/serverless) does not honour `dns.setDefaultResultOrder`, so we
+// install a custom fetch backed by an Agent that forces IPv4 (`family: 4`).
+// This also bypasses Vite's dev-server `fetch` patching. In production (Vercel)
+// the global fetch is untouched, but forcing IPv4 is harmless there too.
+function installNeonFetch(): void {
+  if (neonConfig.fetchFunction) return;
+  try {
+    const undici = (0, eval)('require')('undici');
+    const agent = new undici.Agent({ connect: { family: 4 } });
+    neonConfig.fetchFunction = (url: string, opts?: RequestInit) =>
+      undici.fetch(url, { ...opts, dispatcher: agent });
+  } catch {
+    // Fall back to the global fetch if undici is unavailable.
+    neonConfig.fetchFunction = fetch;
+  }
+}
+
+installNeonFetch();
+
 function getNeonClient() {
   if (!neonClient) {
     neonClient = neon(getConnectionString('neon'));
@@ -48,7 +84,8 @@ function getNeonClient() {
 
 async function getLocalClient(): Promise<PgClient> {
   localClientPromise ??= (async () => {
-    const client = new PgClient({ connectionString: getConnectionString('local') });
+    const Client = await getPgClientCtor();
+    const client = new Client({ connectionString: getConnectionString('local') });
     await client.connect();
     return client;
   })();
