@@ -18,6 +18,7 @@ const AdminDashboard: FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<{ text: string; lessonId: number } | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<LessonLevel>('N5');
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,9 +55,21 @@ const AdminDashboard: FC = () => {
 
   const handleDelete = async (lesson: LessonWithStats) => {
     if (!lesson.id) return;
+    if (deletingId !== null) return;
     const confirmed = window.confirm(`Delete "${lesson.name}" (${lesson.level}) and all its cards? This cannot be undone.`);
     if (!confirmed) return;
-    await removeLesson(lesson.id);
+
+    setDeletingId(lesson.id);
+    setError(null);
+    setSuccessMsg(null);
+    try {
+      await removeLesson(lesson.id);
+      setSuccessMsg({ text: `Deleted "${lesson.name}" and all its cards.`, lessonId: lesson.id });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete lesson');
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const totalDue = lessons.reduce((sum, l) => sum + l.stats.dueCards, 0);
@@ -223,13 +236,18 @@ const AdminDashboard: FC = () => {
                       <button
                         className="btn btn-ghost btn-sm"
                         onClick={(e) => { e.stopPropagation(); handleDelete(lesson); }}
+                        disabled={deletingId === lesson.id}
                         style={{
                           position: 'absolute', top: 12, right: 12,
                           padding: '6px 10px', fontSize: 11, borderRadius: 'var(--radius-sm)',
+                          color: deletingId === lesson.id ? 'var(--text-muted)' : '#DC2626',
+                          opacity: deletingId === lesson.id ? 0.6 : 1,
+                          cursor: deletingId === lesson.id ? 'wait' : 'pointer',
                         }}
-                        title="Delete lesson"
+                        title={deletingId === lesson.id ? 'Deleting…' : 'Delete lesson'}
+                        aria-label={`Delete lesson ${lesson.name}`}
                       >
-                        <Icon name="x" size={12} />
+                        <Icon name="trash" size={14} />
                       </button>
                     </div>
                   ))}
